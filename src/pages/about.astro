@@ -1,0 +1,43 @@
+---
+import Layout from "@/layouts/main.astro"
+import PageHeader from "@/components/layout/PageHeader.astro"
+import PageSection from "@/components/layout/PageSection.astro"
+import ProseContent from "@/components/layout/ProseContent.astro"
+import { getEntry, render } from "astro:content"
+
+const entry = await getEntry("page", "en/about")
+if (!entry) {
+  throw new Error(
+    "Missing page entry: en/about. Create src/content/pages/en/about.mdx."
+  )
+}
+
+const { Content } = await render(entry)
+const seoTitle = entry.data.seo?.seoTitle ?? entry.data.seoTitle ?? entry.data.title
+const seoDescription =
+  entry.data.seo?.seoDescription ??
+  entry.data.seoDescription ??
+  entry.data.description
+---
+
+<Layout
+  lang="en"
+  path="/about/"
+  title={seoTitle}
+  description={seoDescription}
+>
+  <PageSection>
+    <PageHeader
+      title={entry.data.title}
+      subtitle={entry.data.description}
+    />
+
+    <div
+      class="mx-auto max-w-3xl rounded-2xl border border-border bg-card p-6 sm:p-10"
+    >
+      <ProseContent>
+        <Content />
+      </ProseContent>
+    </div>
+  </PageSection>
+</Layout>

@@ -1,9 +1,3 @@
-import {
-  DEFAULT_LOCALE,
-  LOCALES,
-  getLocaleMeta,
-  type Locale,
-} from "@/config/locales"
 import { SITE_CONFIG } from "@/config/site"
 
 export function withTrailingSlash(path: string): string {
@@ -16,21 +10,18 @@ export function normalizePath(path: string): string {
   return withTrailingSlash(next)
 }
 
-export function localePath(locale: Locale, path = "/"): string {
-  const normalized = normalizePath(path)
-  return withTrailingSlash(`/${locale}${normalized === "/" ? "" : normalized}`)
+export function localePath(_locale: string, path = "/"): string {
+  return normalizePath(path)
 }
 
-export function canonicalUrl(locale: Locale, path = "/"): string {
-  return `${SITE_CONFIG.url}${localePath(locale, path)}`
+export function canonicalUrl(_locale: string, path = "/"): string {
+  return `${SITE_CONFIG.url}${normalizePath(path)}`
 }
 
 export function buildAlternates(path = "/"): Record<string, string> {
-  const entries = Object.fromEntries(
-    LOCALES.map((locale) => [
-      getLocaleMeta(locale).hreflang,
-      canonicalUrl(locale, path),
-    ])
-  )
-  return { ...entries, "x-default": canonicalUrl(DEFAULT_LOCALE, path) }
+  const url = canonicalUrl("en", path)
+  return {
+    "en-US": url,
+    "x-default": url,
+  }
 }

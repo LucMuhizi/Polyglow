@@ -1,4 +1,4 @@
-import { DEFAULT_LOCALE, LOCALE_META, LOCALES } from "@/config/locales"
+import { DEFAULT_LOCALE, LOCALE_META } from "@/config/locales"
 import { SITE_CONFIG } from "@/config/site"
 import { getCategory, getTag } from "@/config/taxonomy"
 import {
@@ -17,6 +17,13 @@ function localeLabel(locale: keyof typeof LOCALE_META): string {
   return `${localeMeta.nativeName} (${locale})`
 }
 
+function siteUrl(path: string): string {
+  const normalized = path.startsWith("/") ? path : `/${path}`
+  const looksLikeAsset = /\.[a-z0-9]+$/i.test(normalized)
+  if (looksLikeAsset) return `${SITE_CONFIG.url}${normalized}`
+  return `${SITE_CONFIG.url}${normalized.endsWith("/") ? normalized : `${normalized}/`}`
+}
+
 export function renderLlmsTxt(posts: readonly PostEntry[]): string {
   const latestPosts = posts.slice(0, 12)
 
@@ -26,22 +33,21 @@ export function renderLlmsTxt(posts: readonly PostEntry[]): string {
     `> ${SITE_CONFIG.description}. A concise index for site structure, recent content, and official entry points.`,
     "",
     `- Repository: ${SITE_CONFIG.repository}`,
-    `- Supported locales: ${LOCALES.map((locale) => localeLabel(locale)).join(", ")}`,
     `- Default locale: ${localeLabel(DEFAULT_LOCALE)}`,
     "",
     "## Core",
     "",
-    `- [Home](${SITE_CONFIG.url}/${DEFAULT_LOCALE}/)`,
-    `- [Search](${SITE_CONFIG.url}/${DEFAULT_LOCALE}/search/)`,
-    `- [All posts](${SITE_CONFIG.url}/${DEFAULT_LOCALE}/posts/)`,
-    `- [llms-full.txt](${SITE_CONFIG.url}/llms-full.txt): Full post index with categories, tags, and publication dates.`,
+    `- [Home](${siteUrl("/")})`,
+    `- [About](${siteUrl("/about/")})`,
+    `- [All posts](${siteUrl("/posts/")})`,
+    `- [Contact](${siteUrl("/contact/")})`,
+    `- [llms-full.txt](${siteUrl("llms-full.txt")}): Full post index with categories, tags, and publication dates.`,
     "",
     "## Content endpoints",
     "",
-    `- [English RSS](${SITE_CONFIG.url}/en/rss.xml)`,
-    `- [Chinese RSS](${SITE_CONFIG.url}/zh/rss.xml)`,
-    `- [Sitemap](${SITE_CONFIG.url}/sitemap-index.xml)`,
-    `- [Robots](${SITE_CONFIG.url}/robots.txt)`,
+    `- [RSS](${siteUrl("rss.xml")})`,
+    `- [Sitemap](${siteUrl("sitemap-index.xml")})`,
+    `- [Robots](${siteUrl("robots.txt")})`,
     "",
     "## Recent posts",
     "",
@@ -55,27 +61,27 @@ export function renderLlmsTxt(posts: readonly PostEntry[]): string {
 
 export function renderLlmsFullTxt(posts: readonly PostEntry[]): string {
   const lines = [
-    "# Polyglow llms-full.txt",
+    `# ${SITE_CONFIG.name} llms-full.txt`,
     "",
     `Site: ${SITE_CONFIG.url}`,
     `Generated from ${posts.length} published posts.`,
     `Repository: ${SITE_CONFIG.repository}`,
     "",
     "## Core references",
-    `- [Home](${SITE_CONFIG.url}/${DEFAULT_LOCALE}/)`,
-    `- [llms.txt](${SITE_CONFIG.url}/llms.txt): Concise index summary`,
+    `- [Home](${siteUrl("/")})`,
+    `- [llms.txt](${siteUrl("llms.txt")}): Concise index summary`,
     "",
     "## All posts",
     "",
   ]
 
-  for (const locale of LOCALES) {
-    const localePosts = posts.filter((post) => post.data.locale === locale)
-    if (localePosts.length === 0) continue
-
-    lines.push(`### ${localeLabel(locale)}`, "")
-
+  const localePosts = posts.filter((post) => post.data.locale === "en" || post.data.locale === DEFAULT_LOCALE)
+  if (localePosts.length === 0) {
+    lines.push(`### ${localeLabel(DEFAULT_LOCALE)}`, "", "_No posts published yet._", "")
+  } else {
+    lines.push(`### ${localeLabel(DEFAULT_LOCALE)}`, "")
     for (const post of localePosts) {
+      const locale = post.data.locale
       const categorySlug = postCategorySlug(post)
       const category = getCategory(categorySlug)
       const tags = postTagSlugs(post)
@@ -89,12 +95,11 @@ export function renderLlmsFullTxt(posts: readonly PostEntry[]): string {
         `  - Published: ${post.data.pubDate.toISOString().slice(0, 10)}`
       )
     }
-
     lines.push("")
   }
 
   lines.push("## Optional")
-  lines.push("- [Sitemap](/sitemap-index.xml)")
+  lines.push(`- [Sitemap](${siteUrl("sitemap-index.xml")})`)
 
   return lines.join("\n")
 }

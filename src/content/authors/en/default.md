@@ -1,14 +1,13 @@
 ---
 slug: default
-name: "Polyglow Editorial"
-bio: "Notes on building, investing, technology, and durable content systems."
+name: "Nite Tanzarn"
+bio: "Independent International Consultant, advocate for women's rights, gender equality researcher, and devoted parent. Notes on feminism, structural equity, parenthood, and the systems that shape daily life."
 socials:
-  - { label: "GitHub", url: "https://github.com/zbzailabs/Polyglow" }
-  - { label: "X", url: "https://x.com/zbzailabs" }
-  - { label: "Website", url: "/en/" }
-  - { label: "RSS", url: "/en/rss.xml" }
+  - { label: "Email", url: "mailto:info@nitetanzarn.com" }
+  - { label: "Website", url: "/" }
+  - { label: "RSS", url: "/rss.xml" }
 locale: en
 draft: false
 ---
 
-Polyglow Editorial publishes notes on product building, investment thinking, technical systems, and the craft of maintaining a multilingual static content site.
+Nite Tanzarn publishes reflective musings on feminism, structural equity, care work, taxation, parenthood, and the systems that shape household economies. The blog, *NITE TANZARN IntellectNest*, hosts the long-form notes for the platform.

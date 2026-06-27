@@ -7,7 +7,7 @@ import type { AstroIntegration } from "astro"
 import { LOCALES, type Locale } from "../config/locales"
 
 const SEARCHABLE_PAGE_PATTERN =
-  /^(?:about|posts\/(?!\d+\/)[^/]+)\/index\.html$/
+  /^(?:about|contact|posts\/(?!\d+\/)[^/]+)\/index\.html$/
 
 type PagefindOptions = {
   indexConfig?: Parameters<typeof createIndex>[0]
@@ -18,14 +18,11 @@ const toPosixPath = (value: string) => value.split(path.sep).join("/")
 const getLocaleSearchableFiles = (
   htmlFiles: string[],
   outDir: string,
-  locale: Locale
+  _locale: Locale
 ) =>
   htmlFiles.filter((file) => {
     const relativePath = toPosixPath(path.relative(outDir, file))
-    const localePrefix = `${locale}/`
-    if (!relativePath.startsWith(localePrefix)) return false
-
-    return SEARCHABLE_PAGE_PATTERN.test(relativePath.slice(localePrefix.length))
+    return SEARCHABLE_PAGE_PATTERN.test(relativePath)
   })
 
 const collectHtmlFiles = async (directory: string): Promise<string[]> => {

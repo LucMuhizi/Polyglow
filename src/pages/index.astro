@@ -1,20 +1,167 @@
 ---
-import { DEFAULT_LOCALE } from "@/config/locales"
+import Layout from "@/layouts/main.astro"
+import HomeFeatureGrid from "@/components/lists/HomeFeatureGrid.astro"
 import { SITE_CONFIG } from "@/config/site"
+import { getPostsForLocale } from "@/utils/posts"
 
-const homePath = `/${DEFAULT_LOCALE}/`
-const homeUrl = `${SITE_CONFIG.url}${homePath}`
+const posts = await getPostsForLocale("en")
+const featurePosts = posts.slice(0, 3)
+const tagline = SITE_CONFIG.brandTagline ?? SITE_CONFIG.name
+const heroHeadline = SITE_CONFIG.hero?.headline ?? tagline
+const heroSubheadline =
+  SITE_CONFIG.hero?.subheadline ?? SITE_CONFIG.positioning ?? SITE_CONFIG.description
+const heroCtaLabel = SITE_CONFIG.hero?.ctaLabel ?? "Read the blog"
+const heroCtaUrl = SITE_CONFIG.hero?.ctaUrl ?? "/posts/"
+const contactEmail = SITE_CONFIG.contact?.email ?? ""
+const contactPhone = SITE_CONFIG.contact?.phone ?? ""
 ---
 
-<html lang="en-US">
-  <head>
-    <meta charset="utf-8" />
-    <title>{SITE_CONFIG.name}</title>
-    <meta name="robots" content="noindex, follow" />
-    <meta http-equiv="refresh" content={`0; url=${homePath}`} />
-    <link rel="canonical" href={homeUrl} />
-  </head>
-  <body>
-    <a href={homePath}>Enter {SITE_CONFIG.name}</a>
-  </body>
-</html>
+<Layout
+  lang="en"
+  path="/"
+  title={heroHeadline}
+  description={SITE_CONFIG.description}
+  image={featurePosts[0]?.data.heroImage}
+  dynamicGlass
+>
+  <section
+    class="nt-hero relative isolate overflow-hidden bg-[#0b0b0d] text-white"
+    data-pagefind-ignore
+  >
+    <div
+      class="absolute inset-0 bg-gradient-to-br from-[#101014] via-[#0b0b0d] to-[#1a1a20]"
+    ></div>
+    <div
+      class="absolute inset-0 opacity-50"
+      style="background-image: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.06), transparent 60%), radial-gradient(circle at 80% 70%, rgba(255,255,255,0.04), transparent 65%);"
+      aria-hidden="true"
+    ></div>
+    <div
+      class="relative mx-auto flex max-w-6xl flex-col gap-12 px-4 pb-24 pt-24 sm:px-6 lg:flex-row lg:items-center lg:gap-20 lg:pb-32 lg:pt-32"
+    >
+      <div class="flex-1">
+        <p class="text-xs font-semibold tracking-[0.18em] text-white/60 uppercase">
+          Welcome to
+        </p>
+        <h1
+          class="mt-3 max-w-3xl text-balance text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl lg:text-6xl"
+        >
+          {heroHeadline}
+        </h1>
+        <p class="mt-6 max-w-2xl text-lg leading-8 text-white/75 sm:text-xl">
+          {tagline}
+        </p>
+        <p class="mt-5 max-w-2xl text-base leading-7 text-white/65 sm:text-lg">
+          {heroSubheadline}
+        </p>
+        <div class="mt-10 flex flex-wrap gap-3">
+          <a
+            class="inline-flex min-h-11 items-center justify-center rounded-md bg-white px-5 text-sm font-semibold text-zinc-900 shadow-sm transition hover:-translate-y-0.5 hover:bg-white/90"
+            href={heroCtaUrl}
+          >
+            {heroCtaLabel}
+          </a>
+          <a
+            class="inline-flex min-h-11 items-center justify-center rounded-md border border-white/20 px-5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-white/10"
+            href="/contact/"
+          >
+            Get in touch
+          </a>
+        </div>
+      </div>
+      <aside
+        class="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm lg:w-96"
+      >
+        <p class="text-xs font-semibold tracking-[0.18em] text-white/60 uppercase">
+          About
+        </p>
+        <p class="mt-3 text-base leading-7 text-white/85">
+          {SITE_CONFIG.positioning}
+        </p>
+        {contactEmail || contactPhone ? (
+          <dl class="mt-6 grid grid-cols-1 gap-3 text-sm text-white/80">
+            {contactEmail && (
+              <div class="flex flex-col">
+                <dt class="text-xs uppercase tracking-wide text-white/55">
+                  Email
+                </dt>
+                <dd>
+                  <a class="hover:text-white" href={`mailto:${contactEmail}`}>
+                    {contactEmail}
+                  </a>
+                </dd>
+              </div>
+            )}
+            {contactPhone && (
+              <div class="flex flex-col">
+                <dt class="text-xs uppercase tracking-wide text-white/55">
+                  Phone
+                </dt>
+                <dd>
+                  <a
+                    class="hover:text-white"
+                    href={`tel:${contactPhone.replace(/[^+\d]/g, "")}`}
+                  >
+                    {contactPhone}
+                  </a>
+                </dd>
+              </div>
+            )}
+          </dl>
+        ) : null}
+      </aside>
+    </div>
+  </section>
+
+  <section
+    class="mx-auto max-w-6xl px-4 py-12 sm:px-6"
+    data-pagefind-ignore
+    data-home-surface
+  >
+    <div class="mb-8 flex items-end justify-between gap-4">
+      <h2 class="text-2xl font-semibold tracking-tight sm:text-3xl">
+        Latest reflective musings
+      </h2>
+      <a
+        class="text-sm font-medium text-muted-foreground hover:text-foreground"
+        href="/posts/"
+      >
+        See all posts <span aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+    <HomeFeatureGrid posts={featurePosts} />
+  </section>
+
+  <section
+    class="mx-auto max-w-6xl px-4 pb-16 sm:px-6"
+    data-pagefind-ignore
+  >
+    <div class="rounded-2xl border border-border bg-card px-6 py-10 sm:px-10">
+      <p class="text-xs font-semibold tracking-[0.18em] text-muted-foreground uppercase">
+        Let&rsquo;s connect
+      </p>
+      <h2 class="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
+        Research, training, and consultancy on gender equality and structural
+        equity.
+      </h2>
+      <div class="mt-6 flex flex-wrap items-center gap-x-8 gap-y-3 text-sm">
+        {contactEmail ? (
+          <a
+            class="font-medium underline-offset-4 hover:underline"
+            href={`mailto:${contactEmail}`}
+          >
+            {contactEmail}
+          </a>
+        ) : null}
+        {contactPhone ? (
+          <a
+            class="font-medium underline-offset-4 hover:underline"
+            href={`tel:${contactPhone.replace(/[^+\d]/g, "")}`}
+          >
+            {contactPhone}
+          </a>
+        ) : null}
+      </div>
+    </div>
+  </section>
+</Layout>

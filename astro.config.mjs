@@ -13,24 +13,12 @@ const googleTagManagerEnabled =
   /^GTM-[A-Z0-9]+$/i.test(process.env.PUBLIC_GTM_ID ?? "")
 const sitemapLocaleMap = {
   en: "en-US",
-  zh: "zh-CN",
-  fr: "fr-FR",
-  es: "es-ES",
-  ru: "ru-RU",
-  ja: "ja-JP",
-  ko: "ko-KR",
-  pt: "pt-PT",
-  de: "de-DE",
-  id: "id-ID",
-  ar: "ar",
 }
 const sitemapExcludedPathPatterns = [
   /^\/$/,
-  /\/404\/$/,
-  /\/search\/$/,
-  /\/rss\.xml\/$/,
-  /\/tags\/market\/$/,
-  /\/posts\/placeholder-[^/]+\/$/,
+  /\/404\/?$/,
+  /\/search\/?$/,
+  /\/rss\.xml\/?$/,
 ]
 
 export default defineConfig({
@@ -43,9 +31,9 @@ export default defineConfig({
   },
   i18n: {
     defaultLocale: "en",
-    locales: ["en", "zh", "fr", "es", "ru", "ja", "ko", "pt", "de", "id", "ar"],
+    locales: ["en"],
     routing: {
-      prefixDefaultLocale: true,
+      prefixDefaultLocale: false,
       redirectToDefaultLocale: false,
     },
   },

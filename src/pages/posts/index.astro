@@ -1,0 +1,27 @@
+---
+import Layout from "@/layouts/main.astro"
+import PostArchiveList from "@/components/lists/PostArchiveList.astro"
+import PageHeader from "@/components/layout/PageHeader.astro"
+import PageSection from "@/components/layout/PageSection.astro"
+import { getPostsForLocale } from "@/utils/posts"
+
+const posts = await getPostsForLocale("en")
+const subtitle = posts.length > 0
+  ? `${posts.length} reflective musings.`
+  : "Reflective musings archive."
+---
+
+<Layout
+  lang="en"
+  path="/posts/"
+  title="Reflective Musings"
+  description={subtitle}
+>
+  <PageSection>
+    <PageHeader
+      title="Reflective Musings"
+      subtitle={subtitle}
+    />
+    <PostArchiveList posts={posts} lang="en" />
+  </PageSection>
+</Layout>

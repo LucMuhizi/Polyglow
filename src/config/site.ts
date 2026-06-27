@@ -1,9 +1,62 @@
+import * as fs from "node:fs"
+import * as path from "node:path"
+import { fileURLToPath } from "node:url"
+
+// src/config/site-overrides.json is the file the Pages CMS Site Settings
+// section writes to. Read it at build/dev time so a missing or syntactically
+// invalid JSON quietly resolves to defaults rather than crashing the whole
+// SITE_CONFIG export. Edits surface after a rebuild in production.
+function loadOverrides(): SiteOverrides {
+  try {
+    const here = fileURLToPath(import.meta.url)
+    const overridesFile = path.join(path.dirname(here), "site-overrides.json")
+    if (!fs.existsSync(overridesFile)) return {}
+    const text = fs.readFileSync(overridesFile, "utf8")
+    const parsed: unknown = JSON.parse(text)
+    if (
+      typeof parsed === "object" &&
+      parsed !== null &&
+      !Array.isArray(parsed)
+    ) {
+      return parsed as SiteOverrides
+    }
+    console.warn(
+      "[site] site-overrides.json is not a JSON object; using defaults only."
+    )
+    return {}
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+    console.warn(
+      `[site] Falling back to defaults; could not parse site-overrides.json: ${message}`
+    )
+    return {}
+  }
+}
+
 export type HomepageLayout = "cover" | "archive" | "text"
 export type RemoteImagePattern = {
   protocol: "https"
   hostname: string
 }
 export type X402ChargeMode = "all" | "bot-only"
+
+type SiteOverrides = {
+  heroHeadline?: string
+  heroSubheadline?: string
+  heroCtaLabel?: string
+  heroCtaUrl?: string
+  social?: {
+    twitter?: string
+    linkedin?: string
+    medium?: string
+    github?: string
+  }
+  newsletterHeadline?: string
+  newsletterDescription?: string
+  newsletterFormUrl?: string
+}
+
+const siteOverrides = loadOverrides()
 
 function readPublicEnv(name: string): string | undefined {
   const importMetaEnv = (
@@ -53,6 +106,12 @@ function normalizeBotScoreThreshold(value: string | undefined): number {
   return Math.min(99, Math.max(1, threshold))
 }
 
+function nonEmptyOverride(value: string | undefined): string {
+  if (typeof value !== "string") return ""
+  const trimmed = value.trim()
+  return trimmed.length > 0 ? trimmed : ""
+}
+
 const googleTagManagerId = normalizeGoogleTagManagerId(
   readPublicEnv("PUBLIC_GTM_ID")
 )
@@ -84,23 +143,62 @@ const x402ChargeMode = normalizeX402ChargeMode(
 const x402BotScoreThreshold = normalizeBotScoreThreshold(
   readPublicEnv("PUBLIC_X402_BOT_SCORE_THRESHOLD")
 )
-const socialXUrl = "https://x.com/zbzailabs"
+const socialXUrl = "https://x.com/nitetanzarn"
 const socialXHandle = `@${
-  new URL(socialXUrl).pathname.split("/").filter(Boolean)[0] ?? "polyglow"
+  new URL(socialXUrl).pathname.split("/").filter(Boolean)[0] ?? "nitetanzarn"
 }`
 
+const DEFAULT_HERO = {
+  headline: "Advancing Agency, Authority, and Architecture",
+  subheadline:
+    "An intellectual infrastructure for research, policy, and governance innovation. Grounded in rigour, with future-oriented thinking.",
+  ctaLabel: "Read the blog",
+  ctaUrl: "/posts/",
+}
+
+const overrideSocial = siteOverrides.social ?? {}
+
+const hero = {
+  headline: nonEmptyOverride(siteOverrides.heroHeadline) || DEFAULT_HERO.headline,
+  subheadline:
+    nonEmptyOverride(siteOverrides.heroSubheadline) || DEFAULT_HERO.subheadline,
+  ctaLabel: nonEmptyOverride(siteOverrides.heroCtaLabel) || DEFAULT_HERO.ctaLabel,
+  ctaUrl: nonEmptyOverride(siteOverrides.heroCtaUrl) || DEFAULT_HERO.ctaUrl,
+}
+
+const social = {
+  x: socialXUrl,
+  xHandle: socialXHandle,
+  twitter: nonEmptyOverride(overrideSocial.twitter) || socialXUrl,
+  linkedin: nonEmptyOverride(overrideSocial.linkedin),
+  medium: nonEmptyOverride(overrideSocial.medium),
+  github: nonEmptyOverride(overrideSocial.github),
+}
+
+const newsletter = {
+  headline: nonEmptyOverride(siteOverrides.newsletterHeadline),
+  description: nonEmptyOverride(siteOverrides.newsletterDescription),
+  formUrl: nonEmptyOverride(siteOverrides.newsletterFormUrl),
+}
+
 export const SITE_CONFIG = {
-  name: "Polyglow",
+  name: "Nite Tanzarn",
+  brandTagline: "NITE TANZARN IntellectNest",
   url: (
-    readPublicEnv("PUBLIC_SITE_URL") ?? "https://polyglow.zbz.ai"
+    readPublicEnv("PUBLIC_SITE_URL") ?? "https://nitetanzarn.com"
   ).replace(/\/$/, ""),
   description:
-    "Pressing forward through the waves of startup, the fog of investing, and the ocean of life.",
+    "Advancing Agency, Authority, and Architecture to dismantle structural inequality and design systems for equity.",
+  positioning:
+    "An intellectual infrastructure for research, policy transformation, institutional retrofit, and governance innovation. Grounded in rigour and future-oriented thinking.",
   repository: "https://github.com/zbzailabs/Polyglow",
-  social: {
-    x: socialXUrl,
-    xHandle: socialXHandle,
+  contact: {
+    email: "info@nitetanzarn.com",
+    phone: "123-456-7890",
   },
+  social,
+  hero,
+  newsletter,
   defaultOgImage: "/open-graph.webp",
   assets: {
     publicBaseUrl: publicAssetBaseUrl,

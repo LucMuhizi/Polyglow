@@ -21,7 +21,7 @@ export function postPath(entry: PostEntry): string {
 }
 
 export function postUrl(entry: PostEntry): string {
-  return `/${entry.data.locale}${postPath(entry)}`
+  return postPath(entry)
 }
 
 export function postCategorySlug(entry: PostEntry): string {

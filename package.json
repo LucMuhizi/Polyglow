@@ -30,7 +30,7 @@
     "deploy": "pnpm build && wrangler deploy"
   },
   "dependencies": {
-    "@astrojs/markdown-satteri": "^0.3.2",
+    "@astrojs/markdown-satteri": "0.3.2",
     "@astrojs/mdx": "^7.0.0",
     "@astrojs/partytown": "^2.1.7",
     "@astrojs/rss": "^4.0.18",

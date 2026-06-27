@@ -6,6 +6,19 @@ import { LOCALES } from "@/config/locales"
 
 const locale = z.enum(LOCALES)
 
+const seoPayloadOptional = z
+  .object({
+    seoTitle: z.string().max(60).optional(),
+    seoDescription: z.string().max(160).optional(),
+    canonical: z
+      .string()
+      .refine((value) => /^https?:\/\//.test(value), {
+        message: "Canonical URL must be absolute.",
+      })
+      .optional(),
+  })
+  .optional()
+
 const generateId = ({ entry }: { entry: string }) =>
   entry.replace(/\.(md|mdx|markdown)$/i, "")
 
@@ -53,12 +66,15 @@ const post = defineCollection({
       heroImageWidth: z.number().int().positive().optional(),
       heroImageHeight: z.number().int().positive().optional(),
       heroBlurDataURL: z.string().optional(),
-      canonical: z.url().optional(),
+      canonical: z.string().regex(/^https?:\/\/.+/i).optional(),
       seoTitle: z.string().optional(),
       seoDescription: z.string().optional(),
+      pdfDownload: z.string().regex(/^https?:\/\/.+/i).optional(),
+      readingTime: z.number().int().positive().max(120).optional(),
       locale,
       draft: z.boolean().default(false),
       featured: z.boolean().default(false),
+      seo: seoPayloadOptional,
     })
     .superRefine(remoteImageDimensions),
 })
@@ -77,6 +93,75 @@ const page = defineCollection({
     seoDescription: z.string().optional(),
     noindex: z.boolean().default(false),
     draft: z.boolean().default(false),
+    seo: seoPayloadOptional,
+  }),
+})
+
+const project = defineCollection({
+  loader: glob({
+    pattern: "**/*.{md,mdx,markdown}",
+    base: "./src/content/projects",
+    generateId,
+  }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string().max(200),
+    pubDate: z.coerce.date(),
+    status: z.enum(["completed", "ongoing", "upcoming"]),
+    client: z.string().optional(),
+    tags: z.array(z.string()).default([]),
+    projectUrl: z.url().optional(),
+    relatedArticles: z.array(z.string()).default([]),
+    heroImage: z.string().optional(),
+    heroImageAlt: z.string().optional(),
+    heroImageWidth: z.number().int().positive().optional(),
+    heroImageHeight: z.number().int().positive().optional(),
+    heroBlurDataURL: z.string().optional(),      canonical: z.string().regex(/^https?:\/\/.+/i).optional(),
+    seoTitle: z.string().optional(),
+    seoDescription: z.string().optional(),
+    locale,
+    featured: z.boolean().default(false),
+    draft: z.boolean().default(true),
+    seo: seoPayloadOptional,
+  }),
+})
+
+const speaking = defineCollection({
+  loader: glob({
+    pattern: "**/*.{md,mdx,markdown}",
+    base: "./src/content/speaking",
+    generateId,
+  }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string().max(200),
+    eventDate: z.coerce.date(),
+    pubDate: z.coerce.date(),
+    eventType: z.enum([
+      "keynote",
+      "panel",
+      "interview",
+      "podcast",
+      "press",
+      "webinar",
+      "workshop",
+    ]),
+    organisation: z.string().optional(),
+    location: z.string().optional(),
+    heroImage: z.string().optional(),
+    heroImageAlt: z.string().optional(),
+    heroImageWidth: z.number().int().positive().optional(),
+    heroImageHeight: z.number().int().positive().optional(),
+    heroBlurDataURL: z.string().optional(),
+    recordingUrl: z.url().optional(),
+    slidesUrl: z.url().optional(),
+    tags: z.array(z.string()).default([]),      canonical: z.string().regex(/^https?:\/\/.+/i).optional(),
+    seoTitle: z.string().optional(),
+    seoDescription: z.string().optional(),
+    locale,
+    featured: z.boolean().default(false),
+    draft: z.boolean().default(true),
+    seo: seoPayloadOptional,
   }),
 })
 
@@ -110,4 +195,4 @@ const author = defineCollection({
   }),
 })
 
-export const collections = { post, page, author }
+export const collections = { post, page, project, speaking, author }

@@ -11,97 +11,70 @@ export type TaxonomyItem = {
 
 const localized = (text: LocalizedText): LocalizedText => text
 
+const localizedSingle = (value: string): LocalizedText =>
+  localized({
+    en: value,
+    zh: value,
+    fr: value,
+    es: value,
+    ru: value,
+    ja: value,
+    ko: value,
+    pt: value,
+    de: value,
+    id: value,
+    ar: value,
+  })
+
 export const TAXONOMY = {
   categories: [
     {
-      slug: "startup",
+      slug: "articles",
       order: 0,
-      labelByLocale: localized({
-        zh: "创业",
-        en: "Startup",
-        fr: "Startup",
-        es: "Startup",
-        ru: "Стартап",
-        ja: "スタートアップ",
-        ko: "스타트업",
-        pt: "Startup",
-        de: "Startup",
-        id: "Startup",
-        ar: "الشركات الناشئة",
-      }),
-      descriptionByLocale: localized({
-        zh: "从零到一，产品、团队与系统的持续打造。",
-        en: "From zero to one: products, teams, and systems.",
-        fr: "De zéro à un : produits, équipes et systèmes.",
-        es: "De cero a uno: productos, equipos y sistemas.",
-        ru: "От нуля к единице: продукты, команды и системы.",
-        ja: "ゼロからイチへ。プロダクト、チーム、システム。",
-        ko: "제로에서 일로: 제품, 팀, 시스템.",
-        pt: "Do zero ao um: produtos, equipes e sistemas.",
-        de: "Von null auf eins: Produkte, Teams und Systeme.",
-        id: "Dari nol ke satu: produk, tim, dan sistem.",
-        ar: "من الصفر إلى الواحد: المنتجات والفرق والأنظمة.",
-      }),
+      labelByLocale: localizedSingle("Articles"),
+      descriptionByLocale: localizedSingle(
+        "Long-form analysis and opinion essays on Agency, Authority, and Architecture."
+      ),
     },
     {
-      slug: "invest",
+      slug: "research",
       order: 1,
-      labelByLocale: localized({
-        zh: "投资",
-        en: "Invest",
-        fr: "Investir",
-        es: "Invertir",
-        ru: "Инвестировать",
-        ja: "投資",
-        ko: "투자",
-        pt: "Investir",
-        de: "Investieren",
-        id: "Investasi",
-        ar: "الاستثمار",
-      }),
-      descriptionByLocale: localized({
-        zh: "捕捉价值的艺术，资本与产业的双重逻辑。",
-        en: "The art of capturing value, the dual logic of capital and industry",
-        fr: "L'art de capter la valeur, entre logique du capital et logique industrielle.",
-        es: "El arte de capturar valor, entre la lógica del capital y la industria.",
-        ru: "Искусство улавливать ценность: двойная логика капитала и отрасли.",
-        ja: "価値を捉える技術、資本と産業の二重の論理。",
-        ko: "가치를 포착하는 기술, 자본과 산업의 이중 논리.",
-        pt: "A arte de capturar valor, entre a lógica do capital e da indústria.",
-        de: "Die Kunst, Wert zu erfassen, zwischen Kapital- und Industrielogik.",
-        id: "Seni menangkap nilai, dengan logika ganda modal dan industri.",
-        ar: "فن اقتناص القيمة بين منطق رأس المال ومنطق الصناعة.",
-      }),
+      labelByLocale: localizedSingle("Research"),
+      descriptionByLocale: localizedSingle(
+        "Original research, field reports, and quantitative work."
+      ),
     },
     {
-      slug: "life",
+      slug: "policy",
+      order: 2,
+      labelByLocale: localizedSingle("Policy"),
+      descriptionByLocale: localizedSingle(
+        "Policy briefs, frameworks, and recommendations."
+      ),
+    },
+    {
+      slug: "speaking",
       order: 3,
-      labelByLocale: localized({
-        zh: "生活",
-        en: "Life",
-        fr: "Vie",
-        es: "Vida",
-        ru: "Жизнь",
-        ja: "生活",
-        ko: "생활",
-        pt: "Vida",
-        de: "Leben",
-        id: "Kehidupan",
-        ar: "الحياة",
-      }),
-      descriptionByLocale: localized({
-        zh: "生活札记与随笔。",
-        en: "Personal notes and essays.",
-        fr: "Notes personnelles et essais.",
-        es: "Notas personales y ensayos.",
-        ru: "Личные заметки и эссе.",
-        ja: "個人のメモとエッセイ。",
-        ko: "개인 메모와 에세이.",
-        pt: "Notas pessoais e ensaios.",
-        de: "Persönliche Notizen und Essays.",
-        id: "Catatan pribadi dan esai.",
-        ar: "ملاحظات شخصية ومقالات قصيرة.",
-      }),
+      labelByLocale: localizedSingle("Speaking & Media"),
+      descriptionByLocale: localizedSingle(
+        "Talks, interviews, panels, podcasts, and press mentions."
+      ),
+    },
+    {
+      slug: "notes",
+      order: 4,
+      labelByLocale: localizedSingle("Notes"),
+      descriptionByLocale: localizedSingle(
+        "Brief notes and reflections."
+      ),
+    },
+    {
+      slug: "projects",
+      order: 5,
+      labelByLocale: localizedSingle("Projects"),
+      descriptionByLocale: localizedSingle(
+        "Consultancy and research projects. See the Projects collection."
+      ),
     },
   ],
   tags: [
@@ -405,18 +378,113 @@ export const TAXONOMY = {
         ar: "الإدارة والتشغيل.",
       }),
     },
+    {
+      slug: "governance",
+      order: 11,
+      labelByLocale: localizedSingle("Governance"),
+      descriptionByLocale: localizedSingle(
+        "Governance structures, processes, and reform."
+      ),
+    },
+    {
+      slug: "development",
+      order: 12,
+      labelByLocale: localizedSingle("Development"),
+      descriptionByLocale: localizedSingle(
+        "International and domestic development."
+      ),
+    },
+    {
+      slug: "policy",
+      order: 13,
+      labelByLocale: localizedSingle("Policy"),
+      descriptionByLocale: localizedSingle(
+        "Policy documents, briefs, and frameworks."
+      ),
+    },
+    {
+      slug: "education",
+      order: 14,
+      labelByLocale: localizedSingle("Education"),
+      descriptionByLocale: localizedSingle(
+        "Education systems and equity."
+      ),
+    },
+    {
+      slug: "health",
+      order: 15,
+      labelByLocale: localizedSingle("Health"),
+      descriptionByLocale: localizedSingle(
+        "Public health systems and access."
+      ),
+    },
+    {
+      slug: "technology",
+      order: 16,
+      labelByLocale: localizedSingle("Technology"),
+      descriptionByLocale: localizedSingle(
+        "Technology design and digital equity."
+      ),
+    },
+    {
+      slug: "africa",
+      order: 17,
+      labelByLocale: localizedSingle("Africa"),
+      descriptionByLocale: localizedSingle(
+        "Africa-focused analysis and reporting."
+      ),
+    },
+    {
+      slug: "uganda",
+      order: 18,
+      labelByLocale: localizedSingle("Uganda"),
+      descriptionByLocale: localizedSingle(
+        "Uganda-focused analysis and reporting."
+      ),
+    },
+    {
+      slug: "consultancy",
+      order: 19,
+      labelByLocale: localizedSingle("Consultancy"),
+      descriptionByLocale: localizedSingle(
+        "Independent consultancy engagements."
+      ),
+    },
+    {
+      slug: "research",
+      order: 20,
+      labelByLocale: localizedSingle("Research"),
+      descriptionByLocale: localizedSingle(
+        "Original research, methodology, and findings."
+      ),
+    },
+    {
+      slug: "leadership",
+      order: 21,
+      labelByLocale: localizedSingle("Leadership"),
+      descriptionByLocale: localizedSingle(
+        "Leadership and institutional change."
+      ),
+    },
   ],
 } as const
 
-const PRIMARY_CATEGORY_SLUGS = ["startup", "invest", "life"] as const
+export const PRIMARY_CATEGORY_SLUGS = [
+  "articles",
+  "research",
+  "policy",
+  "speaking",
+  "notes",
+  "projects",
+] as const
 
-const TAGS_BY_CATEGORY: Record<
-  (typeof PRIMARY_CATEGORY_SLUGS)[number],
-  string[]
-> = {
-  startup: ["innovation", "model", "management"],
-  invest: ["strategy", "risk", "allocation"],
-  life: ["reflect", "media", "roam"],
+export const TAGS_BY_CATEGORY: Record<string, readonly string[]> = {
+  articles: ["reflect", "strategy", "model"],
+  research: ["strategy", "model", "innovation"],
+  policy: ["strategy", "model", "management"],
+  speaking: ["media", "strategy", "model"],
+  notes: ["reflect", "roam", "model"],
+  projects: ["innovation", "model", "management"],
 }
 
 export function getCategory(slug: string): TaxonomyItem | undefined {
@@ -430,9 +498,7 @@ export function getTag(slug: string): TaxonomyItem | undefined {
 const normalizeKey = (value: string): string =>
   value.trim().toLowerCase().replace(/[\s_]+/g, "-")
 
-const categoryAliases: Record<string, string> = {
-  investment: "invest",
-}
+const categoryAliases: Record<string, string> = {}
 
 const tagAliases: Record<string, string> = {}
 
@@ -472,8 +538,7 @@ export function getPrimaryCategories(): TaxonomyItem[] {
 }
 
 export function getTagsForCategory(slug: string): TaxonomyItem[] {
-  const tagSlugs =
-    TAGS_BY_CATEGORY[slug as (typeof PRIMARY_CATEGORY_SLUGS)[number]] ?? []
+  const tagSlugs = TAGS_BY_CATEGORY[slug] ?? []
   return tagSlugs
     .map((tagSlug) => getTag(tagSlug))
     .filter((item): item is TaxonomyItem => Boolean(item))

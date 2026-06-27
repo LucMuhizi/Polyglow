@@ -1,0 +1,57 @@
+---
+import Layout from "@/layouts/main.astro"
+import PageHeader from "@/components/layout/PageHeader.astro"
+import PageSection from "@/components/layout/PageSection.astro"
+import { SITE_CONFIG } from "@/config/site"
+
+const email = SITE_CONFIG.contact?.email ?? "info@nitetanzarn.com"
+const phone = SITE_CONFIG.contact?.phone ?? ""
+const phoneHref = `tel:${phone.replace(/[^+\d]/g, "")}`
+const positioning = SITE_CONFIG.positioning ?? SITE_CONFIG.description
+---
+
+<Layout
+  lang="en"
+  path="/contact/"
+  title="Contact"
+  description={`Reach out to ${SITE_CONFIG.name} for research, training, and consultancy inquiries.`}
+>
+  <PageSection>
+    <PageHeader
+      title="Let&rsquo;s Connect"
+      subtitle={SITE_CONFIG.description}
+    />
+
+    <div class="mx-auto max-w-3xl rounded-2xl border border-border bg-card p-6 sm:p-10">
+      <p class="text-base leading-7 text-foreground/85">
+        {positioning}
+      </p>
+
+      <dl class="mt-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
+        <div>
+          <dt class="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Email</dt>
+          <dd class="mt-2 text-base">
+            <a class="font-medium underline-offset-4 hover:underline" href={`mailto:${email}`}>
+              {email}
+            </a>
+          </dd>
+        </div>
+        {phone && (
+          <div>
+            <dt class="text-xs font-semibold tracking-wide text-muted-foreground uppercase">Phone</dt>
+            <dd class="mt-2 text-base">
+              <a class="font-medium underline-offset-4 hover:underline" href={phoneHref}>
+                {phone}
+              </a>
+            </dd>
+          </div>
+        )}
+      </dl>
+
+      <p class="mt-8 text-sm text-muted-foreground">
+        Appropriate contact topics include research collaboration, training programs, consultancy
+        engagements, and speaking invitations.
+      </p>
+    </div>
+  </PageSection>
+</Layout>
