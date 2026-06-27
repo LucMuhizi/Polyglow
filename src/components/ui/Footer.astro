@@ -1,148 +1,104 @@
 ---
-import type { Locale } from "@/config/locales"
-import Icon from "@/components/ui/Icon.astro"
 import OptimizedPicture from "@/components/features/OptimizedPicture.astro"
+import Icon from "@/components/ui/Icon.astro"
 import { SITE_CONFIG } from "@/config/site"
-import { getPrimaryCategories, getTagsForCategory } from "@/config/taxonomy"
+import { getPrimaryCategories } from "@/config/taxonomy"
 import { localePath } from "@/utils/routes"
-import { t } from "@/utils/translations"
 import logo from "@/assets/logo.svg"
 
-interface Props {
-  lang: Locale
-}
-
-const { lang } = Astro.props
+const locale = "en"
 const primaryCategories = getPrimaryCategories()
 const year = new Date().getFullYear()
-const legalLinks = [
-  { href: localePath(lang, "/about/"), label: t(lang, "pages.about.title") },
-  {
-    href: localePath(lang, "/privacy-policy/"),
-    label: t(lang, "footer.privacyPolicy"),
-  },
-  {
-    href: localePath(lang, "/terms-of-service/"),
-    label: t(lang, "footer.termsOfService"),
-  },
-]
 ---
 
-<footer class="w-full bg-background" data-pagefind-ignore>
+<footer class="site-footer w-full" data-pagefind-ignore>
   <div
-    class="mx-auto grid max-w-6xl gap-8 px-4 py-12 text-sm text-muted-foreground sm:px-6 md:grid-cols-[1.35fr_3fr] md:gap-16 md:py-16"
+    class="mx-auto grid max-w-6xl gap-10 px-5 py-12 text-sm sm:px-7 sm:py-16 md:grid-cols-[1.4fr_2fr_1fr] md:gap-12"
   >
-    <div class="flex flex-col items-start gap-2 md:min-h-44 md:gap-3">
+    <div class="flex flex-col items-start gap-4">
       <a
-        href={localePath(lang, "/")}
-        class="flex w-fit items-center gap-2.5 text-xl font-semibold text-foreground"
+        href={localePath("/")}
+        class="flex items-center gap-3 font-serif text-xl font-semibold tracking-[-0.01em]"
       >
         <OptimizedPicture
           src={logo}
           alt={`${SITE_CONFIG.name} logo`}
           variant="logo"
-          width={28}
-          height={28}
-          class="site-logo size-7"
+          width={32}
+          height={32}
+          class="site-logo size-8"
           loading="lazy"
         />
-        <span aria-hidden="true">{SITE_CONFIG.name}</span>
+        <span class="site-footer__brand" aria-hidden="true">{SITE_CONFIG.name}</span>
       </a>
-      <div class="flex items-center justify-start gap-3">
-        <a
-          class="inline-flex size-9 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
-          href={SITE_CONFIG.repository}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="GitHub"
-        >
-          <Icon name="github" class="size-4" dataIcon="inline-start" />
-        </a>
-        <a
-          class="inline-flex size-9 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
-          href={SITE_CONFIG.social.x}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="X"
-        >
-          <Icon name="x" class="size-4" dataIcon="inline-start" />
-        </a>
-        <a
-          class="inline-flex size-9 items-center justify-center text-muted-foreground transition-colors hover:text-foreground"
-          href={`/${lang}/rss.xml`}
-          aria-label="RSS"
-        >
-          <Icon name="rss" class="size-4" dataIcon="inline-start" />
-        </a>
-      </div>
+      <p class="max-w-xs font-serif text-sm leading-6 opacity-80">
+        An intellectual infrastructure for structural equity.
+      </p>
+      <a class="btn-secondary" href={localePath("/about/")}>Read about Nite</a>
     </div>
-    <div class="mx-auto grid w-full max-w-sm grid-cols-2 gap-x-8 gap-y-9 md:mx-0 md:max-w-none md:grid-cols-4 md:gap-x-10 md:gap-y-10">
+
+    <div class="grid grid-cols-2 gap-x-6 gap-y-4 md:grid-cols-3">
       {
-        primaryCategories.map((category) => (
+        primaryCategories.slice(0, 6).map((category) => (
           <nav
-            class="grid w-full content-start gap-4 text-left md:w-fit md:justify-self-start"
-            aria-label={category.labelByLocale[lang]}
+            class="grid w-full content-start gap-2 text-start"
+            aria-label={category.labelByLocale[locale]}
           >
             <a
-              class="text-base font-semibold text-foreground transition-colors hover:text-foreground/75"
-              href={localePath(lang, `/category/${category.slug}/`)}
+              class="font-serif text-base font-semibold underline-offset-4 hover:underline"
+              href={localePath(`/category/${category.slug}/`)}
             >
-              {category.labelByLocale[lang]}
+              {category.labelByLocale[locale]}
             </a>
-            {getTagsForCategory(category.slug).map((tag) => (
-              <a
-                class="text-[0.9375rem] leading-6 transition-colors hover:text-foreground"
-                href={localePath(lang, `/tags/${tag.slug}/`)}
-              >
-                {tag.labelByLocale[lang]}
-              </a>
-            ))}
+            <a
+              class="text-sm leading-6 underline-offset-4 hover:underline opacity-80"
+              href={localePath("/posts/")}
+            >
+              All essays
+            </a>
           </nav>
         ))
       }
-      <nav
-        class="grid w-full content-start gap-4 text-left md:w-fit md:justify-self-start"
-        aria-label={t(lang, "footer.more")}
-      >
-        <p class="text-base font-semibold text-foreground">
-          {t(lang, "footer.more")}
-        </p>
-        <a
-          class="text-[0.9375rem] leading-6 transition-colors hover:text-foreground"
-          href={localePath(lang, "/category/")}
-        >
-          {t(lang, "footer.categories")}
-        </a>
-        <a
-          class="text-[0.9375rem] leading-6 transition-colors hover:text-foreground"
-          href={localePath(lang, "/tags/")}
-        >
-          {t(lang, "footer.tags")}
-        </a>
-        <a
-          class="text-[0.9375rem] leading-6 transition-colors hover:text-foreground"
-          href={localePath(lang, "/author/")}
-        >
-          {t(lang, "footer.author")}
-        </a>
-      </nav>
     </div>
-    <div
-      class="flex flex-col items-center gap-4 pt-8 text-center text-xs font-medium md:col-span-2 md:flex-row md:justify-between md:text-left"
-    >
-      <nav
-        class="flex flex-wrap items-center justify-center gap-x-5 gap-y-3 md:justify-start"
-        aria-label={`${SITE_CONFIG.name} legal`}
-      >
-        {
-          legalLinks.map((link) => (
-            <a class="transition-colors hover:text-foreground" href={link.href}>
-              {link.label}
-            </a>
-          ))
-        }
-      </nav>
-      <p class="text-xs text-muted-foreground">© {year} {SITE_CONFIG.name}</p>
+
+    <div class="flex flex-col items-start gap-4 md:items-end md:text-end">
+      <p class="font-serif text-sm leading-6 opacity-80">
+        Reach Nite for research, training, and consultancy.
+      </p>
+      <div class="flex flex-wrap items-center gap-3 text-sm md:justify-end">
+        {SITE_CONFIG.contact?.email ? (
+          <a
+            class="inline-flex items-center gap-1.5 underline-offset-4 hover:underline"
+            href={`mailto:${SITE_CONFIG.contact.email}`}
+          >
+            <Icon name="mail" class="size-3.5" dataIcon="inline-start" />
+            <span>Email</span>
+          </a>
+        ) : null}
+        {SITE_CONFIG.social?.x ? (
+          <a
+            class="inline-flex items-center gap-1.5 underline-offset-4 hover:underline"
+            href={SITE_CONFIG.social.x}
+            rel="me noopener"
+          >
+            <Icon name="at-sign" class="size-3.5" dataIcon="inline-start" />
+            <span>X</span>
+          </a>
+        ) : null}
+        <a
+          class="inline-flex items-center gap-1.5 underline-offset-4 hover:underline"
+          href="/rss.xml"
+          rel="alternate"
+        >
+          <Icon name="rss" class="size-3.5" dataIcon="inline-start" />
+          <span>RSS</span>
+        </a>
+      </div>
+    </div>
+
+    <div class="md:col-span-3 flex items-center justify-between gap-4 border-t border-current/20 pt-4 text-xs opacity-75">
+      <p>© {year} {SITE_CONFIG.name}</p>
+      <p>NITE TANZARN IntellectNest</p>
     </div>
   </div>
 </footer>

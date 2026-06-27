@@ -1,43 +1,39 @@
 ---
-import Layout from "@/layouts/main.astro"
-import PageHeader from "@/components/layout/PageHeader.astro"
-import PageSection from "@/components/layout/PageSection.astro"
-import ProseContent from "@/components/layout/ProseContent.astro"
 import { getEntry, render } from "astro:content"
+import Layout from "@/layouts/main.astro"
+import ProseContent from "@/components/layout/ProseContent.astro"
 
 const entry = await getEntry("page", "en/values")
 if (!entry) {
-  throw new Error(
-    "Missing page entry: en/values. Create src/content/pages/en/values.mdx."
-  )
+  throw new Error("Missing page entry: en/values")
 }
-
 const { Content } = await render(entry)
-const seoTitle = entry.data.seo?.seoTitle ?? entry.data.seoTitle ?? entry.data.title
-const seoDescription =
-  entry.data.seo?.seoDescription ??
-  entry.data.seoDescription ??
-  entry.data.description
 ---
 
 <Layout
-  lang="en"
   path="/values/"
-  title={seoTitle}
-  description={seoDescription}
+  title={entry.data.title}
+  description={entry.data.description}
+  noindex={entry.data.noindex}
 >
-  <PageSection>
-    <PageHeader
-      title={entry.data.title}
-      subtitle={entry.data.description}
-    />
-
-    <div
-      class="mx-auto max-w-3xl rounded-2xl border border-border bg-card p-6 sm:p-10"
-    >
-      <ProseContent>
-        <Content />
-      </ProseContent>
-    </div>
-  </PageSection>
+  <article
+    class="mx-auto max-w-3xl px-4 py-12 sm:px-6"
+    data-pagefind-body
+  >
+    <header class="mb-10">
+      <h1
+        class="text-balance text-3xl font-semibold leading-tight tracking-tight sm:text-4xl"
+      >
+        {entry.data.title}
+      </h1>
+      {entry.data.description && (
+        <p class="mt-3 max-w-2xl text-base text-muted-foreground sm:text-lg">
+          {entry.data.description}
+        </p>
+      )}
+    </header>
+    <ProseContent class="article-prose max-w-none">
+      <Content />
+    </ProseContent>
+  </article>
 </Layout>

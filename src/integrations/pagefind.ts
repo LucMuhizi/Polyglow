@@ -4,7 +4,6 @@ import { readFile, readdir, rm } from "node:fs/promises"
 import { fileURLToPath } from "node:url"
 import path from "node:path"
 import type { AstroIntegration } from "astro"
-import { LOCALES, type Locale } from "../config/locales"
 
 const SEARCHABLE_PAGE_PATTERN =
   /^(?:about|contact|posts\/(?!\d+\/)[^/]+)\/index\.html$/
@@ -15,11 +14,7 @@ type PagefindOptions = {
 
 const toPosixPath = (value: string) => value.split(path.sep).join("/")
 
-const getLocaleSearchableFiles = (
-  htmlFiles: string[],
-  outDir: string,
-  _locale: Locale
-) =>
+const getSearchableFiles = (htmlFiles: string[], outDir: string) =>
   htmlFiles.filter((file) => {
     const relativePath = toPosixPath(path.relative(outDir, file))
     return SEARCHABLE_PAGE_PATTERN.test(relativePath)
@@ -85,48 +80,45 @@ export default function pagefind({
         const outDir = fileURLToPath(dir)
         await rm(path.join(outDir, "pagefind"), { force: true, recursive: true })
         const htmlFiles = await collectHtmlFiles(outDir)
-
-        for (const locale of LOCALES) {
-          const outputPath = path.join(outDir, "pagefind", locale)
-          const { index, errors: createErrors } = await createIndex(indexConfig)
-          if (!index) {
-            logger.error(`Pagefind failed to create index for ${locale}`)
-            createErrors.forEach((error) => logger.error(error))
-            continue
-          }
-
-          const searchableFiles = getLocaleSearchableFiles(htmlFiles, outDir, locale)
-
-          for (const file of searchableFiles) {
-            const relativePath = toPosixPath(path.relative(outDir, file))
-            const content = await readFile(file, "utf8")
-            const { errors } = await index.addHTMLFile({
-              url: `/${relativePath.replace(/index\.html$/, "")}`,
-              content,
-            })
-
-            if (errors.length) {
-              logger.error(
-                `Pagefind failed to index ${path.relative(outDir, file)} for ${locale}`
-              )
-              errors.forEach((error) => logger.error(error))
-            }
-          }
-
-          logger.info(
-            `Pagefind indexed ${searchableFiles.length} pages for ${locale}`
-          )
-
-          const { outputPath: writtenPath, errors: writeErrors } =
-            await index.writeFiles({ outputPath })
-          if (writeErrors.length) {
-            logger.error(`Pagefind failed to write index for ${locale}`)
-            writeErrors.forEach((error) => logger.error(error))
-            continue
-          }
-
-          logger.info(`Pagefind wrote ${locale} index to ${writtenPath}`)
+        const outputPath = path.join(outDir, "pagefind", "en")
+        const { index, errors: createErrors } = await createIndex(indexConfig)
+        if (!index) {
+          logger.error("Pagefind failed to create index")
+          createErrors.forEach((error) => logger.error(error))
+          return
         }
+
+        const searchableFiles = getSearchableFiles(htmlFiles, outDir)
+
+        for (const file of searchableFiles) {
+          const relativePath = toPosixPath(path.relative(outDir, file))
+          const content = await readFile(file, "utf8")
+          const { errors } = await index.addHTMLFile({
+            url: `/${relativePath.replace(/index\.html$/, "")}`,
+            content,
+          })
+
+          if (errors.length) {
+            logger.error(
+              `Pagefind failed to index ${path.relative(outDir, file)}`
+            )
+            errors.forEach((error) => logger.error(error))
+          }
+        }
+
+        logger.info(
+          `Pagefind indexed ${searchableFiles.length} pages`
+        )
+
+        const { outputPath: writtenPath, errors: writeErrors } =
+          await index.writeFiles({ outputPath })
+        if (writeErrors.length) {
+          logger.error("Pagefind failed to write index")
+          writeErrors.forEach((error) => logger.error(error))
+          return
+        }
+
+        logger.info(`Pagefind wrote index to ${writtenPath}`)
       },
     },
   }

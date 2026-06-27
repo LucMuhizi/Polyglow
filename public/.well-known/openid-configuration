@@ -1,9 +1,9 @@
 {
-  "issuer": "https://polyglow.zbz.ai",
-  "authorization_endpoint": "https://polyglow.zbz.ai/oauth/authorize",
-  "token_endpoint": "https://polyglow.zbz.ai/oauth/token",
-  "jwks_uri": "https://polyglow.zbz.ai/.well-known/jwks.json",
-  "registration_endpoint": "https://polyglow.zbz.ai/auth.md",
+  "issuer": "https://blog.zbz.ai",
+  "authorization_endpoint": "https://blog.zbz.ai/oauth/authorize",
+  "token_endpoint": "https://blog.zbz.ai/oauth/token",
+  "jwks_uri": "https://blog.zbz.ai/.well-known/jwks.json",
+  "registration_endpoint": "https://blog.zbz.ai/auth.md",
   "grant_types_supported": [
     "client_credentials"
   ],

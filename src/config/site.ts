@@ -5,7 +5,7 @@ import { fileURLToPath } from "node:url"
 // src/config/site-overrides.json is the file the Pages CMS Site Settings
 // section writes to. Read it at build/dev time so a missing or syntactically
 // invalid JSON quietly resolves to defaults rather than crashing the whole
-// SITE_CONFIG export. Edits surface after a rebuild in production.
+// SITE_CONFIG export.
 function loadOverrides(): SiteOverrides {
   try {
     const here = fileURLToPath(import.meta.url)
@@ -13,11 +13,7 @@ function loadOverrides(): SiteOverrides {
     if (!fs.existsSync(overridesFile)) return {}
     const text = fs.readFileSync(overridesFile, "utf8")
     const parsed: unknown = JSON.parse(text)
-    if (
-      typeof parsed === "object" &&
-      parsed !== null &&
-      !Array.isArray(parsed)
-    ) {
+    if (typeof parsed === "object" && parsed !== null && !Array.isArray(parsed)) {
       return parsed as SiteOverrides
     }
     console.warn(
@@ -39,12 +35,19 @@ export type RemoteImagePattern = {
   hostname: string
 }
 export type X402ChargeMode = "all" | "bot-only"
+export type ServiceItem = {
+  title: string
+  summary: string
+  href: string
+  detail?: string
+}
 
 type SiteOverrides = {
   heroHeadline?: string
   heroSubheadline?: string
   heroCtaLabel?: string
   heroCtaUrl?: string
+  services?: ServiceItem[]
   social?: {
     twitter?: string
     linkedin?: string
@@ -112,9 +115,7 @@ function nonEmptyOverride(value: string | undefined): string {
   return trimmed.length > 0 ? trimmed : ""
 }
 
-const googleTagManagerId = normalizeGoogleTagManagerId(
-  readPublicEnv("PUBLIC_GTM_ID")
-)
+const googleTagManagerId = normalizeGoogleTagManagerId(readPublicEnv("PUBLIC_GTM_ID"))
 const googleAdsenseClientId = normalizeGoogleAdsenseClientId(
   readPublicEnv("PUBLIC_ADSENSE_CLIENT_ID")
 )
@@ -124,22 +125,19 @@ const publicAssetBaseUrl = normalizePublicString(
 const publicAssetHost = hostnameFromUrl(publicAssetBaseUrl)
 const x402PayTo = normalizePublicString(readPublicEnv("PUBLIC_X402_PAY_TO"))
 const x402Network = normalizePublicString(
-  readPublicEnv("PUBLIC_X402_NETWORK") ??
-    "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1"
+  readPublicEnv("PUBLIC_X402_NETWORK") ?? "solana:EtWTRABZaYq6iMfeYKouRu166VU2xqa1"
 )
 const x402Price = normalizePublicString(
   readPublicEnv("PUBLIC_X402_PRICE") ?? "$0.01"
 )
 const x402Description = normalizePublicString(
   readPublicEnv("PUBLIC_X402_DESCRIPTION") ??
-    "Voluntary x402 payment support for Polyglow content."
+    "Voluntary x402 payment support for Blog content."
 )
 const x402FacilitatorUrl = normalizePublicString(
   readPublicEnv("PUBLIC_X402_FACILITATOR_URL")
 )
-const x402ChargeMode = normalizeX402ChargeMode(
-  readPublicEnv("PUBLIC_X402_CHARGE_MODE")
-)
+const x402ChargeMode = normalizeX402ChargeMode(readPublicEnv("PUBLIC_X402_CHARGE_MODE"))
 const x402BotScoreThreshold = normalizeBotScoreThreshold(
   readPublicEnv("PUBLIC_X402_BOT_SCORE_THRESHOLD")
 )
@@ -152,11 +150,43 @@ const DEFAULT_HERO = {
   headline: "Advancing Agency, Authority, and Architecture",
   subheadline:
     "An intellectual infrastructure for research, policy, and governance innovation. Grounded in rigour, with future-oriented thinking.",
-  ctaLabel: "Read the blog",
+  ctaLabel: "Read the latest",
   ctaUrl: "/posts/",
 }
 
+const DEFAULT_SERVICES: ServiceItem[] = [
+  {
+    title: "Research & Fieldwork",
+    summary:
+      "Original empirical work, field reports, and quantitative analysis grounded in structural inquiry.",
+    href: "/services/",
+    detail: "Briefs, frameworks, white papers",
+  },
+  {
+    title: "Policy Advisory",
+    summary:
+      "Briefs, frameworks, and recommendations for governments, multilaterals, and civil society.",
+    href: "/services/",
+    detail: "Coalition, advisory, review",
+  },
+  {
+    title: "Training & Convening",
+    summary:
+      "Capacity-building for institutions, coalitions, and emerging leaders in structural equity.",
+    href: "/services/",
+    detail: "Workshops, curricula, fellowships",
+  },
+  {
+    title: "Consultancy",
+    summary:
+      "Independent engagements with organisations committed to structural change.",
+    href: "/services/",
+    detail: "Scoping, design, follow-through",
+  },
+]
+
 const overrideSocial = siteOverrides.social ?? {}
+const overrideServices = siteOverrides.services
 
 const hero = {
   headline: nonEmptyOverride(siteOverrides.heroHeadline) || DEFAULT_HERO.headline,
@@ -182,8 +212,9 @@ const newsletter = {
 }
 
 export const SITE_CONFIG = {
-  name: "Nite Tanzarn",
+  brand: "Nite Tanzarn",
   brandTagline: "NITE TANZARN IntellectNest",
+  name: "Nite Tanzarn",
   url: (
     readPublicEnv("PUBLIC_SITE_URL") ?? "https://nitetanzarn.com"
   ).replace(/\/$/, ""),
@@ -191,13 +222,15 @@ export const SITE_CONFIG = {
     "Advancing Agency, Authority, and Architecture to dismantle structural inequality and design systems for equity.",
   positioning:
     "An intellectual infrastructure for research, policy transformation, institutional retrofit, and governance innovation. Grounded in rigour and future-oriented thinking.",
-  repository: "https://github.com/zbzailabs/Polyglow",
+  repository: "https://github.com/zbzailabs/blog",
   contact: {
     email: "info@nitetanzarn.com",
     phone: "123-456-7890",
+    address: "Mbuya, Kampala, Uganda",
   },
   social,
   hero,
+  services: overrideServices && overrideServices.length > 0 ? overrideServices : DEFAULT_SERVICES,
   newsletter,
   defaultOgImage: "/open-graph.webp",
   assets: {

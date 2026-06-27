@@ -1,27 +1,56 @@
 ---
 import Layout from "@/layouts/main.astro"
-import PostArchiveList from "@/components/lists/PostArchiveList.astro"
-import PageHeader from "@/components/layout/PageHeader.astro"
-import PageSection from "@/components/layout/PageSection.astro"
-import { getPostsForLocale } from "@/utils/posts"
+import PostGrid from "@/components/lists/PostGrid.astro"
+import CategoryChips from "@/components/lists/CategoryChips.astro"
+import Icon from "@/components/ui/Icon.astro"
+import { getPosts } from "@/utils/posts"
+import { getPrimaryCategories } from "@/config/taxonomy"
 
-const posts = await getPostsForLocale("en")
+const posts = await getPosts()
+const primaryCategories = getPrimaryCategories().map((category) => ({
+  slug: category.slug,
+  label: category.labelByLocale.en,
+}))
+const title = "Reflective Musings"
 const subtitle = posts.length > 0
-  ? `${posts.length} reflective musings.`
-  : "Reflective musings archive."
+  ? `${posts.length} essays in the archive`
+  : "Archive empty — write something."
 ---
 
-<Layout
-  lang="en"
-  path="/posts/"
-  title="Reflective Musings"
-  description={subtitle}
->
-  <PageSection>
-    <PageHeader
-      title="Reflective Musings"
-      subtitle={subtitle}
+<Layout path="/posts/" title={title} description={subtitle}>
+  <section class="mx-auto w-full max-w-6xl px-5 pt-12 pb-6 sm:px-7 sm:pt-16 sm:pb-8">
+    <header class="flex flex-col gap-3 sm:max-w-2xl">
+      <span class="section-rule" aria-hidden="true"></span>
+      <p class="eyebrow">Archive</p>
+      <h1 class="page-title">{title}</h1>
+      <p class="font-serif text-base leading-7 opacity-85 sm:text-lg">
+        {subtitle}
+      </p>
+      <div class="mt-2 flex flex-wrap items-center gap-3 text-sm">
+        <a class="btn-secondary" href="/about/">
+          About Nite
+        </a>
+        <a
+          class="inline-flex items-center gap-1 underline-offset-4 hover:underline"
+          href="/rss.xml"
+          rel="alternate"
+        >
+          <Icon name="rss" class="size-3.5" />
+          <span>Subscribe via RSS</span>
+        </a>
+      </div>
+    </header>
+  </section>
+
+  <section class="mx-auto w-full max-w-6xl px-5 pb-6 sm:px-7">
+    <CategoryChips
+      categories={primaryCategories}
+      allLabel="All essays"
+      targetSelector="[data-post-grid]"
     />
-    <PostArchiveList posts={posts} lang="en" />
-  </PageSection>
+  </section>
+
+  <section class="mx-auto w-full max-w-6xl px-5 pb-20 sm:px-7 sm:pb-24">
+    <PostGrid posts={posts} featuredFirst={true} />
+  </section>
 </Layout>

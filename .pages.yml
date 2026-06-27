@@ -1,6 +1,6 @@
 # .pages.yml
 # Pages CMS configuration for nitetanzarn.com
-# Built on Polyglow (Astro 6) — place this file at the repository root
+# Built on Blog (Astro 7) — place this file at the repository root
 # Docs: https://pagescms.org/docs/configuration/
 
 # ---------------------------------------------------------------------------
@@ -106,7 +106,7 @@ content:
   # -------------------------------------------------------------------------
   # ARTICLES — primary blog / thought leadership posts
   # Maps to: src/content/posts/en/*.mdx
-  # Polyglow frontmatter schema
+  # Blog frontmatter schema
   # -------------------------------------------------------------------------
 
   - name: articles
@@ -547,77 +547,153 @@ content:
 
 
   # -------------------------------------------------------------------------
-  # PAGES — static singleton pages (About, Services, Values)
+  # PAGES — static singleton pages
+  # Maps to: src/content/pages/en/*.mdx
+  # Each page is edited as a separate file; only one entry per page is
+  # listed so a single entry is the source of truth.
   # -------------------------------------------------------------------------
 
   - name: about
-    label: About page
+    label: About
     type: file
     path: src/content/pages/en/about.mdx
     fields:
       - name: title
-        label: Page title
+        label: Title
         type: string
-        required: true
+        default: About
+        hidden: true
       - name: description
-        label: Meta description
+        label: Summary
         type: text
-        options:
-          maxlength: 160
-      - name: heroImage
-        label: Profile / hero image
-        type: image
-      - name: heroImageAlt
-        label: Image alt text
+      - name: seoTitle
+        label: SEO title
         type: string
-      - name: seo
-        component: seo
+      - name: seoDescription
+        label: SEO description
+        type: text
+      - name: draft
+        label: Draft (hidden from site)
+        type: boolean
+        default: false
       - name: body
-        label: Page content
+        label: Page body
+        type: rich-text
+        options:
+          format: mdx
+
+  - name: contact
+    label: Contact
+    type: file
+    path: src/content/pages/en/contact.md
+    fields:
+      - name: title
+        label: Title
+        type: string
+        default: Contact
+        hidden: true
+      - name: description
+        label: Summary
+        type: text
+      - name: seoTitle
+        label: SEO title
+        type: string
+      - name: seoDescription
+        label: SEO description
+        type: text
+      - name: draft
+        label: Draft (hidden from site)
+        type: boolean
+        default: false
+      - name: body
+        label: Page body
+        type: rich-text
+        options:
+          format: markdown
+
+  - name: values
+    label: Our Values
+    type: file
+    path: src/content/pages/en/values.mdx
+    fields:
+      - name: title
+        label: Title
+        type: string
+        default: "Our Values"
+        hidden: true
+      - name: description
+        label: Summary
+        type: text
+      - name: seoTitle
+        label: SEO title
+        type: string
+      - name: seoDescription
+        label: SEO description
+        type: text
+      - name: draft
+        label: Draft (hidden from site)
+        type: boolean
+        default: false
+      - name: body
+        label: Page body
         type: rich-text
         options:
           format: mdx
 
   - name: services
-    label: Services page
+    label: Consultancy (Services)
     type: file
     path: src/content/pages/en/services.mdx
     fields:
       - name: title
-        label: Page title
+        label: Title
         type: string
-        required: true
+        default: Consultancy
+        hidden: true
       - name: description
-        label: Meta description
+        label: Summary
         type: text
-        options:
-          maxlength: 160
-      - name: seo
-        component: seo
+      - name: seoTitle
+        label: SEO title
+        type: string
+      - name: seoDescription
+        label: SEO description
+        type: text
+      - name: draft
+        label: Draft (hidden from site)
+        type: boolean
+        default: false
       - name: body
-        label: Page content
+        label: Page body
         type: rich-text
         options:
           format: mdx
 
-  - name: values
-    label: Values page
+  - name: annotations
+    label: Annotations
     type: file
-    path: src/content/pages/en/values.mdx
+    path: src/content/pages/en/annotations.mdx
     fields:
       - name: title
-        label: Page title
+        label: Title
         type: string
-        required: true
+        default: Annotations
+        hidden: true
       - name: description
-        label: Meta description
+        label: Summary
         type: text
-        options:
-          maxlength: 160
-      - name: seo
-        component: seo
+      - name: seoTitle
+        label: SEO title
+        type: string
+      - name: seoDescription
+        label: SEO description
+        type: text
+      - name: draft
+        label: Draft (hidden from site)
+        type: boolean
+        default: false
       - name: body
-        label: Page content
+        label: Page body
         type: rich-text
         options:
           format: mdx
@@ -709,6 +785,11 @@ content:
 settings:
   content: merge
   commit:
+    # Pages CMS attributes commits to the editor who saved the change instead
+    # of the GitHub App bot. Email-only collaborators (no GitHub account on
+    # the editor's side) commit under their own name and email, so the GitHub
+    # history reads as a normal contributor graph.
+    identity: user
     templates:
       content: "content({name}): {field.title}"
       media: "media: upload {filename}"

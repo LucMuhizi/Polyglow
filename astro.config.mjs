@@ -18,6 +18,7 @@ const sitemapExcludedPathPatterns = [
   /^\/$/,
   /\/404\/?$/,
   /\/search\/?$/,
+  /\/editor\/?$/,
   /\/rss\.xml\/?$/,
 ]
 
@@ -82,12 +83,17 @@ export default defineConfig({
       include: {
         lucide: [
           "arrow-left",
+          "arrow-right",
+          "arrow-up-right",
+          "at-sign",
           "chevron-down",
           "chevron-left",
           "chevron-right",
+          "download",
           "eye",
           "github",
           "globe",
+          "mail",
           "menu",
           "monitor",
           "moon",

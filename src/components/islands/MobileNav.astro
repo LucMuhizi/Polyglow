@@ -1,32 +1,32 @@
 ---
 import Icon from "@/components/ui/Icon.astro"
-import type { Locale } from "@/config/locales"
 import { SITE_CONFIG } from "@/config/site"
-import { getPrimaryCategories, getTagsForCategory } from "@/config/taxonomy"
 import { localePath } from "@/utils/routes"
 import { t } from "@/utils/translations"
 
-interface Props {
-  lang: Locale
-}
+const locale = "en"
 
-const { lang } = Astro.props
-const primaryCategories = getPrimaryCategories()
+const moreLinks: { href: string; labelKey: string }[] = [
+  { href: "/values/", labelKey: "pages.values.title" },
+  { href: "/contact/", labelKey: "pages.contact.title" },
+  { href: "/services/", labelKey: "pages.services.title" },
+  { href: "/annotations/", labelKey: "pages.annotations.title" },
+]
 ---
 
 <div class="lg:hidden" data-mobile-nav>
   <button
     type="button"
-    class="inline-flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+    class="inline-flex size-9 items-center justify-center rounded-md transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
     aria-label="Menu"
     aria-haspopup="dialog"
     aria-expanded="false"
     data-mobile-nav-trigger
   >
-    <Icon name="menu" class="size-4" dataIcon="inline-start" />
+    <Icon name="menu" class="size-5" dataIcon="inline-start" />
   </button>
   <div
-    class="fixed inset-0 z-50 bg-background/40 backdrop-blur-sm"
+    class="fixed inset-0 z-40 bg-black/35 backdrop-blur-sm"
     hidden
     data-mobile-nav-overlay
   >
@@ -39,15 +39,13 @@ const primaryCategories = getPrimaryCategories()
     hidden
     data-mobile-nav-panel
   >
-    <div
-      class="flex items-center justify-between gap-4 p-4"
-    >
-      <p id="mobile-nav-title" class="text-base font-semibold text-foreground">
+    <div class="flex items-center justify-between gap-4 px-5 py-4 border-b border-current/15">
+      <p id="mobile-nav-title" class="font-serif text-base font-semibold">
         {SITE_CONFIG.name}
       </p>
       <button
         type="button"
-        class="inline-flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+        class="inline-flex size-9 items-center justify-center rounded-md transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
         aria-label="Close menu"
         data-mobile-nav-close
       >
@@ -55,43 +53,41 @@ const primaryCategories = getPrimaryCategories()
       </button>
     </div>
     <nav
-      class="flex flex-col gap-2 overflow-y-auto px-4 py-4"
+      class="flex flex-col gap-1 overflow-y-auto px-5 py-4"
       aria-label="Mobile navigation"
     >
-      {
-        primaryCategories.map((category) => (
-          <details class="group rounded-lg">
-            <summary class="flex min-h-10 cursor-pointer list-none items-center justify-between rounded-lg px-3 text-sm font-medium text-foreground hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring">
-              <span>{category.labelByLocale[lang]}</span>
-              <Icon
-                name="chevron-down"
-                class="size-4 text-muted-foreground transition-transform group-open:rotate-180"
-              />
-            </summary>
-            <div class="mt-1 flex flex-col gap-1 ps-3">
-              {getTagsForCategory(category.slug).map((tag) => (
-                <a
-                  class="rounded-md px-3 py-2 text-sm text-muted-foreground hover:bg-muted hover:text-foreground"
-                  href={localePath(lang, `/tags/${tag.slug}/`)}
-                >
-                  {tag.labelByLocale[lang]}
-                </a>
-              ))}
-            </div>
-          </details>
-        ))
-      }
-      <a
-        class="rounded-lg px-3 py-2 text-sm font-medium hover:bg-muted"
-        href={localePath(lang, "/posts/")}
-      >
-        {t(lang, "pages.posts.title")}
+      <a class="nav-link rounded-md px-3 py-2.5" href={localePath("/")}>
+        {t(locale, "pages.home.title")}
       </a>
-      <a
-        class="rounded-lg px-3 py-2 text-sm font-medium hover:bg-muted"
-        href={localePath(lang, "/search/")}
-      >
-        {t(lang, "search.title")}
+      <a class="nav-link rounded-md px-3 py-2.5" href={localePath("/about/")}>
+        {t(locale, "pages.about.title")}
+      </a>
+      <a class="nav-link rounded-md px-3 py-2.5" href={localePath("/posts/")}>
+        {t(locale, "navigation.musings")}
+      </a>
+      <details class="group rounded-md">
+        <summary
+          class="flex min-h-10 cursor-pointer list-none items-center justify-between rounded-md px-3 py-2 text-sm font-medium hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+        >
+          <span>{t(locale, "navigation.more")}</span>
+          <Icon
+            name="chevron-down"
+            class="size-4 opacity-70 transition-transform group-open:rotate-180"
+          />
+        </summary>
+        <div class="mt-1 flex flex-col gap-1 ps-3">
+          {moreLinks.map((item) => (
+            <a
+              class="rounded-sm px-3 py-2 text-sm opacity-80 hover:bg-muted hover:opacity-100"
+              href={localePath(item.href)}
+            >
+              {t(locale, item.labelKey)}
+            </a>
+          ))}
+        </div>
+      </details>
+      <a class="nav-link rounded-md px-3 py-2.5" href={localePath("/search/")}>
+        {t(locale, "search.title")}
       </a>
     </nav>
   </aside>
@@ -117,9 +113,7 @@ const primaryCategories = getPrimaryCategories()
         return
       overlay.hidden = false
       panel.hidden = false
-      requestAnimationFrame(() => {
-        panel.classList.remove("translate-x-full")
-      })
+      requestAnimationFrame(() => panel.classList.remove("translate-x-full"))
       trigger.setAttribute("aria-expanded", "true")
       panel.querySelector("a, button, summary")?.focus()
     }

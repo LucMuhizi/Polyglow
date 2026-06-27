@@ -1,0 +1,63 @@
+---
+interface Props {
+  stats?: Array<{ value: string; label: string }>
+  eyebrow?: string
+  title?: string
+  attribution?: string
+  mode?: "default" | "hero" | "about"
+}
+
+const {
+  stats = [],
+  eyebrow = "At a glance",
+  title,
+  attribution,
+  mode = "default",
+} = Astro.props
+
+const fallback = [
+  { value: "30+", label: "Years of practice" },
+  { value: "40+", label: "Countries engaged" },
+  { value: "120+", label: "Essays & reports" },
+  { value: "18", label: "UN agencies advised" },
+]
+
+const figures = stats.length > 0 ? stats : fallback
+const containerClass =
+  mode === "hero"
+    ? "credibility-strip flex flex-col gap-0 divide-y lg:divide-y-0 lg:divide-x"
+    : "credibility-strip flex flex-col gap-0 divide-y lg:divide-y-0 lg:divide-x"
+---
+
+<section
+  class={containerClass}
+  aria-labelledby="credibility-strip-title"
+  data-pagefind-ignore
+>
+  <header class="px-5 pt-5 pb-3 lg:px-6 lg:pt-6 lg:pb-4">
+    <p class="credibility-strip__label">{eyebrow}</p>
+    {title ? (
+      <h3 id="credibility-strip-title" class="mt-2 font-serif text-lg leading-tight">
+        {title}
+      </h3>
+    ) : null}
+    {attribution ? (
+      <p class="credibility-strip__label mt-1 opacity-75">{attribution}</p>
+    ) : null}
+  </header>
+  <ol
+    class="grid grid-cols-2 gap-0 px-5 pb-5 lg:grid-cols-4 lg:px-0 lg:py-0"
+    role="list"
+  >
+    {
+      figures.map((figure) => (
+        <li class="credibility-strip__cell flex flex-col gap-2 px-4 py-4 lg:py-6 lg:px-6">
+          <span class="credibility-strip__figure text-3xl sm:text-4xl">
+            {figure.value}
+          </span>
+          <span class="credibility-strip__label">{figure.label}</span>
+        </li>
+      ))
+    }
+  </ol>
+</section>

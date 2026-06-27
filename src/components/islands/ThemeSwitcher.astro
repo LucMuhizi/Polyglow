@@ -1,20 +1,15 @@
 ---
-import type { Locale } from "@/config/locales"
 import Icon from "@/components/ui/Icon.astro"
 import { t } from "@/utils/translations"
 
-interface Props {
-  lang: Locale
-}
-
-const { lang } = Astro.props
+const locale = "en"
 ---
 
 <div class="relative" data-dropdown-menu>
   <button
     type="button"
     class="inline-flex size-8 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-    aria-label={t(lang, "theme.toggle")}
+    aria-label={t(locale, "theme.toggle")}
     aria-haspopup="menu"
     aria-expanded="false"
     data-dropdown-menu-trigger
@@ -42,7 +37,7 @@ const { lang } = Astro.props
       data-theme-value="light"
     >
       <Icon name="sun" class="size-4" dataIcon="inline-start" />
-      <span>{t(lang, "theme.light")}</span>
+      <span>{t(locale, "theme.light")}</span>
     </button>
     <button
       type="button"
@@ -51,7 +46,7 @@ const { lang } = Astro.props
       data-theme-value="dark"
     >
       <Icon name="moon" class="size-4" dataIcon="inline-start" />
-      <span>{t(lang, "theme.dark")}</span>
+      <span>{t(locale, "theme.dark")}</span>
     </button>
     <button
       type="button"
@@ -60,7 +55,7 @@ const { lang } = Astro.props
       data-theme-value="system"
     >
       <Icon name="monitor" class="size-4" dataIcon="inline-start" />
-      <span>{t(lang, "theme.system")}</span>
+      <span>{t(locale, "theme.system")}</span>
     </button>
   </div>
 </div>

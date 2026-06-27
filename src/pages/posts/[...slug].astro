@@ -3,6 +3,8 @@ import { getCollection, render } from "astro:content"
 import Layout from "@/layouts/main.astro"
 import ProseContent from "@/components/layout/ProseContent.astro"
 import OptimizedPicture from "@/components/features/OptimizedPicture.astro"
+import ReadingProgressBar from "@/components/features/ReadingProgressBar.astro"
+import Icon from "@/components/ui/Icon.astro"
 import { postPath, postSlug } from "@/utils/posts"
 import { getAuthor } from "@/utils/content"
 import { getCategory } from "@/config/taxonomy"
@@ -11,7 +13,7 @@ import { SITE_CONFIG } from "@/config/site"
 export async function getStaticPaths() {
   const posts = await getCollection(
     "post",
-    (entry) => !entry.data.draft && entry.data.locale === "en"
+    (entry) => !entry.data.draft
   )
   return posts.map((post) => ({
     params: { slug: postSlug(post) },
@@ -21,29 +23,44 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props
 const { Content, headings } = await render(post)
-const author = await getAuthor(post.data.locale, post.data.authors[0])
+const author = await getAuthor(post.data.authors[0] ?? "default")
 const path = postPath(post)
 const fallbackAuthor = author?.data?.name ?? SITE_CONFIG.name
-const categorySlug = (post.data.category ?? "").toString().trim().toLowerCase().replace(/\s+/g, "-")
+
+const categorySlug = (post.data.category ?? "")
+  .toString()
+  .trim()
+  .toLowerCase()
+  .replace(/\s+/g, "-")
 const category = getCategory(categorySlug) ?? null
-const categoryLabel = category?.labelByLocale?.[post.data.locale] ?? categorySlug
+const categoryLabel = category?.labelByLocale.en ?? categorySlug
+
 const dateFormatter = new Intl.DateTimeFormat("en", {
   month: "short",
   day: "numeric",
   year: "numeric",
 })
 const publishedLabel = dateFormatter.format(post.data.pubDate)
-const titleByLocale: Record<string, string> = {
-  en: "Contents",
-}
-const tocTitle = titleByLocale[post.data.locale] ?? "Contents"
+const updatedLabel = post.data.updatedDate
+  ? dateFormatter.format(post.data.updatedDate)
+  : null
+
+const wordCount = (post.body ?? "").split(/\s+/).filter(Boolean).length
+const readingTimeText = post.data.readingTime
+  ? `${post.data.readingTime} min read`
+  : `${Math.max(1, Math.round(wordCount / 220))} min read`
+
+const viewCount = post.data.viewCount
+
+const tocTitle = "Contents"
 const tocHeadings = (headings ?? [])
   .filter((h) => h.depth === 2 || h.depth === 3)
   .map((h) => ({ depth: h.depth as 2 | 3, text: h.text, slug: h.slug }))
+
+const pdfUrl = post.data.pdfDownload ?? null
 ---
 
 <Layout
-  lang="en"
   path={path}
   title={post.data.title}
   description={post.data.description}
@@ -51,60 +68,121 @@ const tocHeadings = (headings ?? [])
   imageAlt={post.data.heroImageAlt}
   ogType="article"
 >
-  <article class="mx-auto w-full max-w-3xl px-4 py-8 sm:px-5 md:px-6" data-pagefind-body>
-    <header class="mb-8">
-      <p class="text-xs font-semibold tracking-[0.18em] text-muted-foreground uppercase">
-        {categoryLabel}
-      </p>
-      <h1 class="mt-3 text-balance text-3xl font-semibold leading-tight tracking-tight sm:text-4xl">
+  <ReadingProgressBar />
+
+  <article
+    class="mx-auto w-full max-w-6xl px-5 py-10 sm:px-7 sm:py-14"
+    data-pagefind-body
+  >
+    <nav aria-label="Breadcrumb" class="mb-6 flex items-center gap-2 text-xs">
+      <a class="breadcrumb-link" href="/posts/">Archive</a>
+      <Icon name="chevron-right" class="size-3 opacity-60" />
+      <a class="breadcrumb-link" href={`/posts/#${categorySlug}`}>{categoryLabel}</a>
+      <Icon name="chevron-right" class="size-3 opacity-60" />
+      <span class="opacity-70">Current essay</span>
+    </nav>
+
+    <header class="mb-10 max-w-3xl">
+      <p class="eyebrow">{categoryLabel}</p>
+      <h1 class="article-title mt-3">
         {post.data.title}
       </h1>
-      <p class="mt-3 text-sm text-muted-foreground">
-        <time datetime={post.data.pubDate.toISOString()}>{publishedLabel}</time>
-        <span aria-hidden="true"> · </span>
-        <span>{fallbackAuthor}</span>
+      <p class="mt-4 font-serif text-lg leading-8 opacity-85 sm:text-xl">
+        {post.data.description}
       </p>
+
+      <div class="article-meta mt-7">
+        <time datetime={post.data.pubDate.toISOString()}>{publishedLabel}</time>
+        <span class="article-meta__pill">{fallbackAuthor}</span>
+        <span>{readingTimeText}</span>
+        {viewCount ? <span>{viewCount} views</span> : null}
+        {pdfUrl ? (
+          <a
+            class="article-meta__pill inline-flex items-center gap-1.5"
+            href={pdfUrl}
+            rel="noopener"
+          >
+            <Icon name="download" class="size-3" />
+            <span>PDF</span>
+          </a>
+        ) : null}
+        {updatedLabel ? (
+          <span class="opacity-80">Updated {updatedLabel}</span>
+        ) : null}
+      </div>
     </header>
 
-    {
-      post.data.heroImage && (
-        <figure class="mb-8 overflow-hidden rounded-3xl">
-          <OptimizedPicture
-            src={post.data.heroImage}
-            alt={post.data.heroImageAlt ?? post.data.title}
-            width={post.data.heroImageWidth}
-            height={post.data.heroImageHeight}
-            priority
-            class="h-auto w-full object-cover"
-          />
-        </figure>
-      )
-    }
+    <div class="grid gap-10 lg:grid-cols-[minmax(0,1fr)_16rem] lg:gap-12">
+      <div class="min-w-0">
+        {
+          post.data.heroImage ? (
+            <figure class="mb-10 overflow-hidden rounded-md border border-current/15">
+              <OptimizedPicture
+                src={post.data.heroImage}
+                alt={post.data.heroImageAlt ?? post.data.title}
+                width={post.data.heroImageWidth}
+                height={post.data.heroImageHeight}
+                priority
+                class="h-auto w-full object-cover"
+              />
+            </figure>
+          ) : null
+        }
 
-    <ProseContent class="article-prose max-w-none">
-      <Content />
-    </ProseContent>
+        <ProseContent class="article-prose max-w-none">
+          <Content />
+        </ProseContent>
 
-    <footer class="mt-12 border-t border-border pt-6 text-sm text-muted-foreground">
-      <p class="text-xs tracking-wide uppercase">Tags</p>
-      <p class="mt-2 flex flex-wrap gap-2 text-xs">
-        {(post.data.tags ?? []).map((tag) => (
-          <span class="rounded-full bg-muted px-2 py-1 text-foreground">{tag}</span>
-        ))}
-      </p>
-    </footer>
+        <footer class="mt-12 border-t border-current/20 pt-6">
+          <p class="eyebrow">Tags</p>
+          <div class="mt-3 flex flex-wrap gap-2">
+            {(post.data.tags ?? []).map((tag) => (
+              <a
+                class="article-meta__pill transition-transform hover:-translate-y-0.5"
+                href={`/posts/#${tag}`}
+              >
+                {tag}
+              </a>
+            ))}
+          </div>
+
+          <div class="mt-8 flex flex-wrap items-center justify-between gap-4">
+            <a class="btn-secondary" href="/posts/">Back to archive</a>
+            {pdfUrl ? (
+              <a class="btn-primary" href={pdfUrl} rel="noopener">
+                <Icon name="download" class="size-4" dataIcon="inline-start" />
+                <span>Download PDF</span>
+              </a>
+            ) : null}
+          </div>
+        </footer>
+      </div>
+
+      {tocHeadings.length >= 3 ? (
+        <aside class="hidden lg:block">
+          <nav
+            class="article-toc"
+            aria-label={tocTitle}
+          >
+            <p class="article-toc__label">{tocTitle}</p>
+            <ul class="flex flex-col">
+              {tocHeadings.map((heading) => (
+                <li>
+                  <a
+                    class:list={[
+                      "article-toc__link",
+                      heading.depth === 3 ? "article-toc__link--depth-3" : "",
+                    ]}
+                    href={`#${heading.slug}`}
+                  >
+                    {heading.text}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </aside>
+      ) : null}
+    </div>
   </article>
-
-  {tocHeadings.length >= 3 && (
-    <aside class="mx-auto mt-4 hidden max-w-3xl px-4 text-sm text-muted-foreground xl:block">
-      <p class="mb-2 font-semibold text-foreground">{tocTitle}</p>
-      <ul class="flex flex-col gap-1">
-        {tocHeadings.map((h) => (
-          <li class:list={[h.depth === 3 ? "pl-3 text-xs" : ""]}>
-            <a class="hover:text-foreground" href={`#${h.slug}`}>{h.text}</a>
-          </li>
-        ))}
-      </ul>
-    </aside>
-  )}
 </Layout>

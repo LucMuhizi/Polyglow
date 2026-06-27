@@ -3,7 +3,6 @@ import { normalizeCategorySlug, normalizeTagSlug } from "@/config/taxonomy"
 type NavigablePost = {
   id: string
   data: {
-    locale: string
     category: string
     tags: readonly string[]
     pubDate: Date
@@ -24,7 +23,7 @@ export function selectRelatedPosts<TPost extends NavigablePost>(posts: readonly 
   const currentCategory = normalizeCategorySlug(current.data.category)
 
   return posts
-    .filter((post) => post.id !== current.id && post.data.locale === current.data.locale)
+    .filter((post) => post.id !== current.id)
     .map((post) => {
       const sharedTagCount = post.data.tags
         .map((tag) => normalizeTagSlug(tag))

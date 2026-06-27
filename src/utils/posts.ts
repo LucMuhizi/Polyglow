@@ -1,6 +1,5 @@
 import { getCollection, type CollectionEntry } from "astro:content"
 
-import { LOCALES, type Locale } from "@/config/locales"
 import { normalizeCategorySlug, normalizeTagSlug } from "@/config/taxonomy"
 import { normalizeContentSlug } from "@/utils/content-slug"
 
@@ -13,7 +12,7 @@ export function sortPostsByDate(posts: readonly PostEntry[]): PostEntry[] {
 }
 
 export function postSlug(entry: PostEntry): string {
-  return normalizeContentSlug(entry.id, entry.data.locale)
+  return normalizeContentSlug(entry.id)
 }
 
 export function postPath(entry: PostEntry): string {
@@ -36,18 +35,14 @@ export async function getPublishedPosts(): Promise<PostEntry[]> {
   return sortPostsByDate(await publishedPostsPromise)
 }
 
-export async function getPostsForLocale(locale: Locale): Promise<PostEntry[]> {
-  return (await getPublishedPosts()).filter((post) => post.data.locale === locale)
+export async function getPosts(): Promise<PostEntry[]> {
+  return getPublishedPosts()
 }
 
-export async function getPostsByCategory(locale: Locale, slug: string): Promise<PostEntry[]> {
-  return (await getPostsForLocale(locale)).filter((post) => postCategorySlug(post) === slug)
+export async function getPostsByCategory(slug: string): Promise<PostEntry[]> {
+  return (await getPublishedPosts()).filter((post) => postCategorySlug(post) === slug)
 }
 
-export async function getPostsByTag(locale: Locale, slug: string): Promise<PostEntry[]> {
-  return (await getPostsForLocale(locale)).filter((post) => postTagSlugs(post).includes(slug))
-}
-
-export function localeStaticPaths() {
-  return LOCALES.map((locale) => ({ params: { lang: locale }, props: { lang: locale } }))
+export async function getPostsByTag(slug: string): Promise<PostEntry[]> {
+  return (await getPublishedPosts()).filter((post) => postTagSlugs(post).includes(slug))
 }

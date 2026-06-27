@@ -19,6 +19,7 @@ pnpm-debug.log*
 # environment variables
 .env
 .env.production
+.env.local
 
 # macOS-specific files
 .DS_Store
@@ -28,3 +29,8 @@ pnpm-debug.log*
 
 # IDE settings
 .vscode/
+
+# Migration scratch data from scripts/migrate-from-wix.mjs
+scripts/.migration/
+# Brand-asset scratch data from scripts/prepare-nt-assets.mjs
+scripts/.nt-assets/

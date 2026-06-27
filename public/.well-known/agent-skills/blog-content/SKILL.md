@@ -1,11 +1,11 @@
 ---
-name: polyglow-content
-description: Use this skill to discover and read Polyglow's public multilingual editorial content.
+name: blog-content
+description: Use this skill to discover and read Blog's public multilingual editorial content.
 ---
 
-# Polyglow Content
+# Blog Content
 
-Polyglow is a static multilingual editorial site covering startup, investing, and life notes.
+Blog is a static multilingual editorial site covering startup, investing, and life notes.
 
 ## Entry Points
 

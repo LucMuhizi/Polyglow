@@ -1,20 +1,21 @@
 ---
 title: "Contact"
-description: "How to contact Polyglow and what the contact channel is for."
-locale: en
-draft: false
+description: "Get in touch for research, training, and consultancy inquiries."
+locale: "en"
+seoTitle: "Contact"
+seoDescription: "Contact Nite Tanzarn for research, training, and consultancy inquiries on gender equality and structural equity."
 ---
 
-Polyglow is a public blog website that provides article reading only.
+Reach out for research, training, and consultancy inquiries. We respond to substantive requests within five working days.
 
-To contact the site owner, email hi@mail.polyglow.com.
+## Best for
 
-Appropriate contact topics include:
+- Research collaborations and fieldwork requests.
+- Policy briefings, advisory, and review work.
+- Speaking engagements, panels, podcasts, and press.
+- Training design and delivery.
+- Consultancy scoping, especially where structural equity is a stated commitment.
 
-- Content corrections
-- Copyright or attribution issues
-- Privacy requests
-- Site access problems
-- Ad display issues
+## Working with us
 
-Polyglow does not provide investment consulting, business consulting, legal advice, or personal technical support.
+Before getting in touch, it helps to be specific about the engagement you have in mind: what you want to achieve, the timeline, the budget, and the institutional context. We will ask follow-up questions. We do not take on engagements that contradict our values.

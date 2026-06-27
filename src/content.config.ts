@@ -2,10 +2,6 @@ import { defineCollection } from "astro:content"
 import { glob } from "astro/loaders"
 import { z } from "astro/zod"
 
-import { LOCALES } from "@/config/locales"
-
-const locale = z.enum(LOCALES)
-
 const seoPayloadOptional = z
   .object({
     seoTitle: z.string().max(60).optional(),
@@ -71,7 +67,7 @@ const post = defineCollection({
       seoDescription: z.string().optional(),
       pdfDownload: z.string().regex(/^https?:\/\/.+/i).optional(),
       readingTime: z.number().int().positive().max(120).optional(),
-      locale,
+      viewCount: z.number().int().nonnegative().optional(),
       draft: z.boolean().default(false),
       featured: z.boolean().default(false),
       seo: seoPayloadOptional,
@@ -88,7 +84,6 @@ const page = defineCollection({
   schema: z.object({
     title: z.string(),
     description: z.string(),
-    locale,
     seoTitle: z.string().optional(),
     seoDescription: z.string().optional(),
     noindex: z.boolean().default(false),
@@ -116,10 +111,10 @@ const project = defineCollection({
     heroImageAlt: z.string().optional(),
     heroImageWidth: z.number().int().positive().optional(),
     heroImageHeight: z.number().int().positive().optional(),
-    heroBlurDataURL: z.string().optional(),      canonical: z.string().regex(/^https?:\/\/.+/i).optional(),
+    heroBlurDataURL: z.string().optional(),
+    canonical: z.string().regex(/^https?:\/\/.+/i).optional(),
     seoTitle: z.string().optional(),
     seoDescription: z.string().optional(),
-    locale,
     featured: z.boolean().default(false),
     draft: z.boolean().default(true),
     seo: seoPayloadOptional,
@@ -155,15 +150,24 @@ const speaking = defineCollection({
     heroBlurDataURL: z.string().optional(),
     recordingUrl: z.url().optional(),
     slidesUrl: z.url().optional(),
-    tags: z.array(z.string()).default([]),      canonical: z.string().regex(/^https?:\/\/.+/i).optional(),
+    tags: z.array(z.string()).default([]),
+    canonical: z.string().regex(/^https?:\/\/.+/i).optional(),
     seoTitle: z.string().optional(),
     seoDescription: z.string().optional(),
-    locale,
     featured: z.boolean().default(false),
     draft: z.boolean().default(true),
     seo: seoPayloadOptional,
   }),
 })
+
+// Single-author brand profile. The headlineStats array drives the
+// `CredibilityStrip` on the editorial hero and any "About" surfaces.
+const DEFAULT_HEADLINE_STATS = [
+  { value: "30+", label: "Years of practice" },
+  { value: "40+", label: "Countries engaged" },
+  { value: "120+", label: "Essays & reports" },
+  { value: "18", label: "UN agencies advised" },
+]
 
 const author = defineCollection({
   loader: glob({
@@ -174,12 +178,22 @@ const author = defineCollection({
   schema: z.object({
     name: z.string(),
     bio: z.string().default(""),
-    locale,
     slug: z.string().default("default"),
+    role: z.string().optional(),
+    tagline: z.string().optional(),
+    location: z.string().optional(),
     avatar: z.string().optional(),
     avatarWidth: z.number().int().positive().optional(),
     avatarHeight: z.number().int().positive().optional(),
     githubUsername: z.string().optional(),
+    headlineStats: z
+      .array(
+        z.object({
+          value: z.string().min(1).max(16),
+          label: z.string().min(1).max(40),
+        })
+      )
+      .default(DEFAULT_HEADLINE_STATS),
     socials: z
       .array(
         z.object({

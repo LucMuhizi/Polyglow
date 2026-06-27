@@ -1,21 +1,19 @@
 ---
-import { getLocaleMeta, type Locale } from "@/config/locales"
-
 interface Props {
-  lang: Locale
   id?: string
   label?: string
   class?: string
 }
 
 const {
-  lang,
   id = "search-page",
   label = "Site search",
   class: className = "",
 } = Astro.props
-const hint = getLocaleMeta(lang).searchHint
-const bundlePath = `/pagefind/${lang}/`
+const locale = "en"
+const hint =
+  "Search across posts and pages."
+const bundlePath = `/pagefind/${locale}/`
 ---
 
 <div
@@ -23,7 +21,7 @@ const bundlePath = `/pagefind/${lang}/`
   role="search"
   aria-label={label}
 >
-  <div id={id} class="pagefind-ui pagefind-init w-full" data-locale={lang}>
+  <div id={id} class="pagefind-ui pagefind-init w-full" data-locale={locale}>
     <p
       class="rounded-lg bg-background/70 p-6 text-sm text-muted-foreground shadow-sm backdrop-blur-md"
     >
@@ -31,8 +29,8 @@ const bundlePath = `/pagefind/${lang}/`
     </p>
   </div>
 </div>
-<link href={`/pagefind/${lang}/pagefind-ui.css`} rel="stylesheet" />
-<script is:inline define:vars={{ id, lang, bundlePath }}>
+<link href={`/pagefind/${locale}/pagefind-ui.css`} rel="stylesheet" />
+<script is:inline define:vars={{ id, lang: locale, bundlePath }}>
   ;(() => {
     window.__pagefindSearchCleanup?.()
 

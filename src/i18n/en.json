@@ -1,17 +1,12 @@
 {
   "site": {
-    "name": "Polyglow",
-    "titleTemplate": "%s · Polyglow",
-    "description": "Pressing forward through the waves of startup, the fog of investing, and the ocean of life.",
+    "name": "Nite Tanzarn",
+    "titleTemplate": "%s · Nite Tanzarn",
+    "description": "Discover NITE TANZARN, a feminist online platform driving change through gender equality research, training, and consultancy.",
     "twitter": {
-      "site": "@polyglow",
-      "creator": "@polyglow"
+      "site": "@nitetanzarn",
+      "creator": "@nitetanzarn"
     }
-  },
-  "language": {
-    "name": "English",
-    "switch": "Switch Language",
-    "current": "Current Language"
   },
   "theme": {
     "toggle": "Toggle Theme",
@@ -46,66 +41,59 @@
   "headings": {
     "home": {
       "title": "Home",
-      "h1": "Polyglow",
-      "h2": "Pressing forward through the waves of startup, the fog of investing, and the ocean of life."
+      "h1": "Nite Tanzarn",
+      "h2": "Advancing Agency, Authority, and Architecture to dismantle structural inequality and design systems for equity."
     },
-    "build": {
-      "h1": "Startup",
-      "h2": "The path from zero to one, spotting opportunities and challenges"
+    "articles": {
+      "h1": "Articles",
+      "h2": "Long-form essays and reflection."
     },
-    "innovation": {
-      "h1": "Innovation",
-      "h2": "Technology-driven and breakthrough thinking, seeking the power to change the world"
+    "research": {
+      "h1": "Research",
+      "h2": "Original research, field reports, and quantitative work."
     },
-    "model": {
-      "h1": "Model",
-      "h2": "From cases to trends, exploring repeatable growth logic"
+    "policy": {
+      "h1": "Policy",
+      "h2": "Policy briefs and frameworks."
     },
-    "management": {
-      "h1": "Management",
-      "h2": "Balancing strategy and execution to build an efficient organization and team culture"
+    "speaking": {
+      "h1": "Speaking & Media",
+      "h2": "Talks, panels, podcasts, and press mentions."
     },
-    "invest": {
-      "h1": "Invest",
-      "h2": "The art of capturing value, the dual logic of capital and industry"
+    "notes": {
+      "h1": "Notes",
+      "h2": "Brief reflections and field notes."
     },
-    "risk": {
-      "h1": "Risk",
-      "h2": "Certainty within uncertainty: how to identify and hedge effectively"
-    },
-    "strategy": {
-      "h1": "Strategy",
-      "h2": "Moving forward in the game, building long-term advantages and moats"
-    },
-    "allocation": {
-      "h1": "Allocation",
-      "h2": "The optimal use of resources: balancing capital, time, and energy"
-    },
-    "life": {
-      "h1": "Life",
-      "h2": "Beyond efficiency and output: pursuing balance, health, and happiness"
-    },
-    "reflect": {
-      "h1": "Reflect",
-      "h2": "Slow down and think deeply about future possibilities"
-    },
-    "media": {
-      "h1": "Media",
-      "h2": "From reading to observing, gaining cross-boundary inspiration and insight"
-    },
-    "roam": {
-      "h1": "Roam",
-      "h2": "On the road, feeling a genuine connection with the world"
+    "projects": {
+      "h1": "Projects",
+      "h2": "Consultancy and research projects."
     }
   },
   "navigation": {
-    "build": "Startup",
-    "invest": "Invest",
-    "life": "Life"
+    "build": "Articles",
+    "invest": "Research",
+    "life": "Notes",
+    "more": "More",
+    "musings": "Reflective Musings"
   },
   "pages": {
+    "home": {
+      "title": "Home"
+    },
     "about": {
       "title": "About"
+    },
+    "contact": {
+      "title": "Contact"
+    },
+    "values": {
+      "title": "Our Values"
+    },
+    "services": {
+      "title": "Consultancy"
+    },
+    "annotations": {
+      "title": "Annotations"
     },
     "author": {
       "title": "Author",
@@ -118,7 +106,7 @@
     "posts": {
       "title": "All Posts",
       "archiveEyebrow": "Archive",
-      "archiveTitle": "Article Archive",
+      "archiveTitle": "Reflective Musings",
       "archiveSubtitle": "All published notes in reverse chronological order.",
       "totalPosts": "{count} posts in total",
       "pageTitle": "All Posts {page}",
@@ -149,6 +137,17 @@
     "next": "Next",
     "previous": "Previous",
     "readMore": "Read More",
+    "skipToContent": "Skip to content",
+    "about": "About",
+    "contact": "Contact",
+    "viewPdf": "Download PDF",
+    "readArticle": "Read article",
+    "viewAll": "View all",
+    "aria": {
+      "menu": "Menu",
+      "close": "Close",
+      "search": "Search"
+    },
     "pagination": {
       "totalPosts": "{count} posts in total",
       "totalPostsWithLang": "{lang} {count} posts in total",
@@ -163,18 +162,40 @@
   "footer": {
     "copyright": "Copyright",
     "allRightsReserved": "All Rights Reserved",
-    "more": "More",
-    "author": "Author",
-    "categories": "Categories",
-    "tags": "Tags",
-    "privacyPolicy": "Privacy Policy",
-    "termsOfService": "Terms of Service",
-    "contactUs": "Contact Us"
+    "tagline": "An intellectual infrastructure for structural equity."
   },
   "homepage": {
     "featuredPosts": "Featured Posts",
+    "ctaMusings": "Reflective Musings",
     "topArticles": "Top Articles",
-    "latestArticles": "Latest Articles"
+    "latestArticles": "Latest essays",
+    "latestEyebrow": "Recent work",
+    "latestCta": "See all essays",
+    "servicesEyebrow": "What we do",
+    "servicesTitle": "Engagements and frameworks",
+    "servicesCta": "Engage us",
+    "profileEyebrow": "About the author",
+    "profileCta": "Read about",
+    "credibilityEyebrow": "At a glance",
+    "heroEyebrow": "Reflections, policy, and structure",
+    "browseArchive": "Browse archive"
+  },
+  "articles": {
+    "toc": "Contents",
+    "filterBy": "Filter by",
+    "all": "All",
+    "filter": {
+      "label": "Filter essays by category",
+      "all": "All essays",
+      "clear": "Clear filter"
+    },
+    "meta": {
+      "byline": "By {author}",
+      "readingTime": "{minutes} min read",
+      "wordCount": "{count} words",
+      "viewCount": "{count} views",
+      "pdfDownload": "Download PDF"
+    }
   },
   "notFound": {
     "title": "Page Not Found",

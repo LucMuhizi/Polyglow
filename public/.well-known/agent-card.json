@@ -1,12 +1,12 @@
 {
-  "name": "Polyglow Content",
+  "name": "Blog Content",
   "version": "1.0.0",
-  "description": "Read-only public content discovery for Polyglow, a multilingual static editorial site.",
-  "url": "https://polyglow.zbz.ai",
+  "description": "Read-only public content discovery for Blog, a multilingual static editorial site.",
+  "url": "https://blog.zbz.ai",
   "supportedInterfaces": [
     {
       "transport": "https",
-      "url": "https://polyglow.zbz.ai/llms.txt"
+      "url": "https://blog.zbz.ai/llms.txt"
     }
   ],
   "capabilities": {
@@ -16,8 +16,8 @@
   },
   "skills": [
     {
-      "id": "polyglow-content",
-      "name": "Polyglow Content Discovery",
+      "id": "blog-content",
+      "name": "Blog Content Discovery",
       "description": "Find public posts, locale routes, RSS feeds, and machine-readable content indexes."
     }
   ]

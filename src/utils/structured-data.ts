@@ -1,4 +1,3 @@
-import { getLocaleMeta, type Locale } from "@/config/locales"
 import { SITE_CONFIG } from "@/config/site"
 import { canonicalUrl } from "@/utils/routes"
 
@@ -7,14 +6,16 @@ export type SeoAuthor = {
   url: string
 }
 
+const SITE_LANGUAGE = "en-US"
+const SITE_OG_LOCALE = "en_US"
+
 function absoluteUrl(value: string): string {
   if (/^https?:\/\//i.test(value)) return value
   return `${SITE_CONFIG.url}${value.startsWith("/") ? "" : "/"}${value}`
 }
 
-export function webSiteJsonLd(lang: Locale) {
-  const url = canonicalUrl(lang, "/")
-  const language = getLocaleMeta(lang).hreflang
+export function webSiteJsonLd() {
+  const url = canonicalUrl("/")
 
   return {
     "@context": "https://schema.org",
@@ -23,24 +24,22 @@ export function webSiteJsonLd(lang: Locale) {
     name: SITE_CONFIG.name,
     url,
     description: SITE_CONFIG.description,
-    inLanguage: language,
+    inLanguage: SITE_LANGUAGE,
     potentialAction: {
       "@type": "SearchAction",
-      target: `${canonicalUrl(lang, "/search/")}?q={search_term_string}`,
+      target: `${canonicalUrl("/search/")}?q={search_term_string}`,
       "query-input": "required name=search_term_string",
     },
   }
 }
 
 export function webPageJsonLd(input: {
-  lang: Locale
   path: string
   title: string
   description: string
   image?: string
 }) {
-  const url = canonicalUrl(input.lang, input.path)
-  const language = getLocaleMeta(input.lang).hreflang
+  const url = canonicalUrl(input.path)
 
   return {
     "@context": "https://schema.org",
@@ -49,18 +48,17 @@ export function webPageJsonLd(input: {
     name: input.title,
     description: input.description,
     url,
-    inLanguage: language,
+    inLanguage: SITE_LANGUAGE,
     image: input.image
       ? absoluteUrl(input.image)
       : absoluteUrl(SITE_CONFIG.defaultOgImage),
     isPartOf: {
-      "@id": `${canonicalUrl(input.lang, "/")}#website`,
+      "@id": `${canonicalUrl("/")}#website`,
     },
   }
 }
 
 export function articleJsonLd(input: {
-  lang: Locale
   path: string
   title: string
   description: string
@@ -72,9 +70,8 @@ export function articleJsonLd(input: {
   keywords: string[]
   wordCount: number
 }) {
-  const url = canonicalUrl(input.lang, input.path)
+  const url = canonicalUrl(input.path)
   const image = absoluteUrl(input.image)
-  const language = getLocaleMeta(input.lang).hreflang
 
   return {
     "@context": "https://schema.org",
@@ -82,7 +79,7 @@ export function articleJsonLd(input: {
     "@id": `${url}#article`,
     headline: input.title,
     description: input.description,
-    inLanguage: language,
+    inLanguage: SITE_LANGUAGE,
     url,
     mainEntityOfPage: {
       "@type": "WebPage",
@@ -111,3 +108,6 @@ export function articleJsonLd(input: {
     })),
   }
 }
+
+export const SITE_LANGUAGE_VALUE = SITE_LANGUAGE
+export const SITE_OG_LOCALE_VALUE = SITE_OG_LOCALE

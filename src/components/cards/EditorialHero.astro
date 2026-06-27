@@ -1,0 +1,83 @@
+---
+import { SITE_CONFIG } from "@/config/site"
+import CredibilityStrip from "@/components/cards/CredibilityStrip.astro"
+
+interface Props {
+  author?: {
+    name: string
+    role?: string
+    tagline?: string
+    location?: string
+  }
+  ctaLabel?: string
+  ctaUrl?: string
+  secondaryLabel?: string
+  secondaryUrl?: string
+  heading?: string
+  subheadline?: string
+}
+
+const {
+  author,
+  ctaLabel = SITE_CONFIG.hero.ctaLabel,
+  ctaUrl = SITE_CONFIG.hero.ctaUrl,
+  secondaryLabel = "Engage us",
+  secondaryUrl = "/services/",
+  heading = SITE_CONFIG.hero.headline,
+  subheadline = SITE_CONFIG.hero.subheadline,
+} = Astro.props
+
+const heroEyebrow = "Reflections, policy, and structure"
+---
+
+<section
+  class="editorial-hero relative isolate overflow-hidden"
+  data-pagefind-ignore
+>
+  <div class="mx-auto grid w-full max-w-6xl gap-12 px-5 py-20 sm:px-7 lg:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] lg:gap-16 lg:py-28">
+    <div class="flex flex-col gap-7">
+      <div class="flex flex-col gap-2">
+        <span class="editorial-hero__eyebrow-rule" aria-hidden="true"></span>
+        <p class="eyebrow">{heroEyebrow}</p>
+      </div>
+      <h1 class="text-balance text-[2.5rem] leading-[1.06] sm:text-[3rem] lg:text-[3.5rem]">
+        {heading}
+      </h1>
+      {subheadline ? (
+        <p class="max-w-2xl text-pretty text-lg leading-8 opacity-90 sm:text-xl">
+          {subheadline}
+        </p>
+      ) : null}
+      {
+        author ? (
+          <div class="mt-2 flex flex-col gap-1 text-sm">
+            <span class="font-medium">{author.name}</span>
+            {author.role ? (
+              <span class="opacity-75">{author.role}</span>
+            ) : null}
+            {author.tagline ? (
+              <p class="mt-2 max-w-md text-pretty leading-7 opacity-85">
+                {author.tagline}
+              </p>
+            ) : null}
+          </div>
+        ) : null
+      }
+      <div class="mt-2 flex flex-wrap items-center gap-3">
+        <a class="btn-gold" href={ctaUrl}>{ctaLabel}</a>
+        <a class="btn-secondary" href={secondaryUrl} style="border-color: var(--hairline); color: var(--card-foreground);">
+          {secondaryLabel}
+        </a>
+      </div>
+    </div>
+
+    <aside class="relative">
+      <CredibilityStrip
+        mode="hero"
+        eyebrow="At a glance"
+        title="By the numbers"
+        attribution={author ? `As of ${new Date().getFullYear()}` : undefined}
+      />
+    </aside>
+  </div>
+</section>

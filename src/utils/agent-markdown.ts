@@ -1,4 +1,3 @@
-import { DEFAULT_LOCALE, LOCALE_META } from "@/config/locales"
 import { SITE_CONFIG } from "@/config/site"
 import { getCategory, getTag } from "@/config/taxonomy"
 import {
@@ -10,11 +9,6 @@ import {
 
 function canonicalPostUrl(post: PostEntry): string {
   return `${SITE_CONFIG.url}${postUrl(post)}`
-}
-
-function localeLabel(locale: keyof typeof LOCALE_META): string {
-  const localeMeta = LOCALE_META[locale]
-  return `${localeMeta.nativeName} (${locale})`
 }
 
 function siteUrl(path: string): string {
@@ -33,14 +27,18 @@ export function renderLlmsTxt(posts: readonly PostEntry[]): string {
     `> ${SITE_CONFIG.description}. A concise index for site structure, recent content, and official entry points.`,
     "",
     `- Repository: ${SITE_CONFIG.repository}`,
-    `- Default locale: ${localeLabel(DEFAULT_LOCALE)}`,
+    "- Default locale: English (en)",
     "",
     "## Core",
     "",
     `- [Home](${siteUrl("/")})`,
     `- [About](${siteUrl("/about/")})`,
-    `- [All posts](${siteUrl("/posts/")})`,
+    `- [Our Values](${siteUrl("/values/")})`,
+    `- [Consultancy](${siteUrl("/services/")})`,
     `- [Contact](${siteUrl("/contact/")})`,
+    `- [Annotations](${siteUrl("/annotations/")})`,
+    `- [All posts](${siteUrl("/posts/")})`,
+    `- [Search](${siteUrl("/search/")})`,
     `- [llms-full.txt](${siteUrl("llms-full.txt")}): Full post index with categories, tags, and publication dates.`,
     "",
     "## Content endpoints",
@@ -69,28 +67,33 @@ export function renderLlmsFullTxt(posts: readonly PostEntry[]): string {
     "",
     "## Core references",
     `- [Home](${siteUrl("/")})`,
+    `- [About](${siteUrl("/about/")})`,
+    `- [Our Values](${siteUrl("/values/")})`,
+    `- [Consultancy](${siteUrl("/services/")})`,
+    `- [Contact](${siteUrl("/contact/")})`,
+    `- [Annotations](${siteUrl("/annotations/")})`,
+    `- [All posts](${siteUrl("/posts/")})`,
+    `- [Search](${siteUrl("/search/")})`,
     `- [llms.txt](${siteUrl("llms.txt")}): Concise index summary`,
     "",
     "## All posts",
     "",
   ]
 
-  const localePosts = posts.filter((post) => post.data.locale === "en" || post.data.locale === DEFAULT_LOCALE)
-  if (localePosts.length === 0) {
-    lines.push(`### ${localeLabel(DEFAULT_LOCALE)}`, "", "_No posts published yet._", "")
+  if (posts.length === 0) {
+    lines.push("### English", "", "_No posts published yet._", "")
   } else {
-    lines.push(`### ${localeLabel(DEFAULT_LOCALE)}`, "")
-    for (const post of localePosts) {
-      const locale = post.data.locale
+    lines.push("### English", "")
+    for (const post of posts) {
       const categorySlug = postCategorySlug(post)
       const category = getCategory(categorySlug)
       const tags = postTagSlugs(post)
-        .map((tag) => getTag(tag)?.labelByLocale[locale] ?? tag)
+        .map((tag) => getTag(tag)?.labelByLocale.en ?? tag)
         .join(", ")
       lines.push(
         `- [${post.data.title}](${canonicalPostUrl(post)})`,
         `  - Description: ${post.data.description}`,
-        `  - Category: ${category?.labelByLocale[locale] ?? categorySlug}`,
+        `  - Category: ${category?.labelByLocale.en ?? categorySlug}`,
         `  - Tags: ${tags || "None"}`,
         `  - Published: ${post.data.pubDate.toISOString().slice(0, 10)}`
       )

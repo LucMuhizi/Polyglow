@@ -2,7 +2,7 @@
 import "@/styles/global.css"
 import { SEO } from "astro-seo"
 import { ClientRouter } from "astro:transitions"
-import { LOCALES, getLocaleMeta, type Locale } from "@/config/locales"
+import { SITE_LANGUAGE_VALUE, SITE_OG_LOCALE_VALUE } from "@/utils/structured-data"
 import { SITE_CONFIG } from "@/config/site"
 import { buildAlternates, canonicalUrl } from "@/utils/routes"
 import { t } from "@/utils/translations"
@@ -10,13 +10,11 @@ import { normalizeMetaDescription } from "@/utils/seo"
 import { webPageJsonLd, webSiteJsonLd } from "@/utils/structured-data"
 import Header from "@/components/ui/Header.astro"
 import Footer from "@/components/ui/Footer.astro"
-import DynamicGlass from "@/components/features/DynamicGlass.astro"
 import GTMHead from "@/components/widgets/GTMHead.astro"
 import GTMBody from "@/components/widgets/GTMBody.astro"
 import Adsense from "@/components/widgets/Adsense.astro"
 
 interface Props {
-  lang: Locale
   path?: string
   title?: string
   description?: string
@@ -34,11 +32,10 @@ interface Props {
   alternates?: Record<string, string>
   noindex?: boolean
   jsonLd?: unknown
-  dynamicGlass?: boolean
 }
 
+const locale = "en"
 const {
-  lang,
   path = "/",
   title = SITE_CONFIG.name,
   description,
@@ -50,11 +47,9 @@ const {
   alternates: explicitAlternates,
   noindex = false,
   jsonLd,
-  dynamicGlass = false,
 } = Astro.props
 const alternates = explicitAlternates ?? buildAlternates(path)
-const localeMeta = getLocaleMeta(lang)
-const fallbackDescription = t(lang, "site.description")
+const fallbackDescription = t(locale, "site.description")
 const pageDescription = normalizeMetaDescription(
   description ?? fallbackDescription,
   fallbackDescription
@@ -63,15 +58,14 @@ const pageTitle =
   title === SITE_CONFIG.name || title.includes(SITE_CONFIG.name)
     ? title
     : `${title} | ${SITE_CONFIG.name}`
-const canonical = canonicalOverride ?? canonicalUrl(lang, path)
+const canonical = canonicalOverride ?? canonicalUrl(path)
 const absoluteImage = image.startsWith("http")
   ? image
   : `${SITE_CONFIG.url}${image}`
 const socialImageAlt = imageAlt ?? pageTitle
 const baseJsonLd = [
-  webSiteJsonLd(lang),
+  webSiteJsonLd(),
   webPageJsonLd({
-    lang,
     path,
     title: pageTitle,
     description: pageDescription,
@@ -89,16 +83,13 @@ const languageAlternates = noindex
       hrefLang,
       href,
     }))
-const alternateOgLocales = LOCALES.filter((locale) => locale !== lang).map(
-  (locale) => getLocaleMeta(locale).ogLocale
-)
 ---
 
-<html lang={localeMeta.hreflang} dir={localeMeta.dir}>
+<html lang={SITE_LANGUAGE_VALUE} dir="ltr">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width" />
-    <meta http-equiv="content-language" content={localeMeta.hreflang} />
+    <meta http-equiv="content-language" content={SITE_LANGUAGE_VALUE} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <ClientRouter />
     <SEO
@@ -116,8 +107,8 @@ const alternateOgLocales = LOCALES.filter((locale) => locale !== lang).map(
         },
         optional: {
           description: pageDescription,
-          locale: localeMeta.ogLocale,
-          localeAlternate: alternateOgLocales,
+          locale: SITE_OG_LOCALE_VALUE,
+          localeAlternate: [],
           siteName: SITE_CONFIG.name,
         },
         image: {
@@ -184,18 +175,12 @@ const alternateOgLocales = LOCALES.filter((locale) => locale !== lang).map(
                   type: "string",
                   description: "Search query.",
                 },
-                locale: {
-                  type: "string",
-                  description: "Locale prefix.",
-                  enum: ["en", "zh", "fr", "es", "ru", "ja", "ko", "pt", "de", "id", "ar"],
-                  default: "en",
-                },
               },
               required: ["query"],
               additionalProperties: false,
             },
-            execute: async ({ query, locale = "en" }) => {
-              const path = `/${locale}/search/?q=${encodeURIComponent(query)}`
+            execute: async ({ query }) => {
+              const path = `/search/?q=${encodeURIComponent(query)}`
               return {
                 url: new URL(path, location.origin).toString(),
                 title: modelContextSearchTitle,
@@ -215,11 +200,10 @@ const alternateOgLocales = LOCALES.filter((locale) => locale !== lang).map(
   </head>
   <body>
     <GTMBody />
-    <Header lang={lang} path={path} />
+    <Header />
     <main class="flex-1">
       <slot />
     </main>
-    <Footer lang={lang} />
-    {dynamicGlass && <DynamicGlass />}
+    <Footer />
   </body>
 </html>

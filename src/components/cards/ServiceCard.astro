@@ -1,0 +1,40 @@
+---
+import Icon from "@/components/ui/Icon.astro"
+
+interface Props {
+  title: string
+  summary: string
+  href: string
+  detail?: string
+  index?: number
+}
+
+const { title, summary, href, detail, index } = Astro.props
+const ariaLabel = detail ? `${title} — ${detail}` : title
+---
+
+<article
+  class="service-card flex flex-col gap-3 px-5 py-6 sm:px-6 sm:py-7"
+>
+  <div
+    class="flex items-center gap-2 text-[0.7rem] font-semibold uppercase tracking-[0.18em]"
+  >
+    <span class="section-rule" aria-hidden="true"></span>
+    {
+      typeof index === "number" ? (
+        <span class="opacity-80">0{index + 1}</span>
+      ) : null
+    }
+    {detail ? <span class="opacity-80">{detail}</span> : null}
+  </div>
+  <h3 class="service-card__title text-balance text-xl leading-tight sm:text-2xl">
+    <a href={href} aria-label={ariaLabel}>{title}</a>
+  </h3>
+  <p class="service-card__summary text-base leading-7">{summary}</p>
+  <div class="mt-2 flex items-center gap-2 text-sm">
+    <a class="inline-flex items-center gap-1 underline-offset-4 hover:underline" href={href}>
+      <span>Learn more</span>
+      <Icon name="arrow-right" class="size-4" dataIcon="inline-start" />
+    </a>
+  </div>
+</article>
